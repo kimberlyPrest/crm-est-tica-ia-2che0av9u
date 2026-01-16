@@ -11,6 +11,7 @@ import Crm from './pages/Crm'
 import Clientes from './pages/Clientes'
 import Agenda from './pages/Agenda'
 import KnowledgeBase from './pages/KnowledgeBase'
+import AgentConfigPage from './pages/knowledge-base/AgentConfig'
 import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
 import MainLayout from './components/layout/MainLayout'
@@ -45,6 +46,10 @@ const App = () => (
             <Route path="/clientes" element={<Clientes />} />
             <Route path="/agenda" element={<Agenda />} />
             <Route path="/base-conhecimento" element={<KnowledgeBase />} />
+            <Route
+              path="/base-conhecimento/agente-ia"
+              element={<AgentConfigPage />}
+            />
             <Route path="/configuracoes" element={<Settings />} />
           </Route>
 
