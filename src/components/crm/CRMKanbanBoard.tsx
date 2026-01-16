@@ -6,12 +6,16 @@ interface CRMKanbanBoardProps {
   statuses: CRMStatus[]
   leadsByStatus: Record<string, CRMLead[]>
   loading: boolean
+  onLeadDrop: (lead: CRMLead, targetStatusId: string) => void
+  onLeadClick: (lead: CRMLead) => void
 }
 
 export function CRMKanbanBoard({
   statuses,
   leadsByStatus,
   loading,
+  onLeadDrop,
+  onLeadClick,
 }: CRMKanbanBoardProps) {
   if (loading) {
     return (
@@ -43,6 +47,8 @@ export function CRMKanbanBoard({
           <CRMKanbanColumn
             status={status}
             leads={leadsByStatus[status.id] || []}
+            onLeadDrop={onLeadDrop}
+            onLeadClick={onLeadClick}
           />
         </div>
       ))}
