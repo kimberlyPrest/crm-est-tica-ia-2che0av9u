@@ -43,6 +43,7 @@ interface SchedulingModalProps {
   onOpenChange: (open: boolean) => void
   lead: CRMLead | null
   initialType?: 'evaluation' | 'session'
+  initialDealId?: string
   onSuccess: () => void
 }
 
@@ -51,6 +52,7 @@ export function SchedulingModal({
   onOpenChange,
   lead,
   initialType,
+  initialDealId,
   onSuccess,
 }: SchedulingModalProps) {
   const {
@@ -64,7 +66,7 @@ export function SchedulingModal({
     submitting,
     confirmBooking,
     isDayDisabled,
-  } = useScheduling(lead, open)
+  } = useScheduling(lead, open, initialDealId)
 
   const handleTypeChange = (value: string) => {
     const type = value as 'evaluation' | 'session'
@@ -150,7 +152,7 @@ export function SchedulingModal({
                     <SelectContent>
                       {deals.map((deal) => (
                         <SelectItem key={deal.id} value={deal.id}>
-                          {deal.product_name || 'Contrato'} (
+                          {deal.products?.name || 'Contrato'} (
                           {deal.completed_sessions}/{deal.total_sessions}{' '}
                           sessões)
                         </SelectItem>

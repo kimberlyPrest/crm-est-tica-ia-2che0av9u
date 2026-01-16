@@ -42,7 +42,11 @@ export interface SchedulingState {
   dealId: string | null
 }
 
-export function useScheduling(lead: CRMLead | null, isOpen: boolean) {
+export function useScheduling(
+  lead: CRMLead | null,
+  isOpen: boolean,
+  initialDealId?: string,
+) {
   const [state, setState] = useState<SchedulingState>({
     step: 'details',
     type: 'evaluation',
@@ -72,18 +76,18 @@ export function useScheduling(lead: CRMLead | null, isOpen: boolean) {
     if (isOpen && lead) {
       setState({
         step: 'details',
-        type: 'evaluation',
+        type: initialDealId ? 'session' : 'evaluation',
         staffId: null,
         date: undefined,
         time: null,
         notes: '',
-        dealId: null,
+        dealId: initialDealId || null,
       })
       setSlots([])
       fetchStaff()
       fetchDeals()
     }
-  }, [isOpen, lead])
+  }, [isOpen, lead, initialDealId])
 
   // Fetch active staff members
   const fetchStaff = async () => {
@@ -133,9 +137,9 @@ export function useScheduling(lead: CRMLead | null, isOpen: boolean) {
     try {
       const { data, error } = await supabase
         .from('deals')
-        .select('*')
+        .select(`*, products (name)`)
         .eq('lead_id', lead.id)
-        .eq('status', 'won') // Assuming 'won' means active/sold
+        .eq('status', 'active')
 
       if (error) throw error
 
@@ -143,10 +147,6 @@ export function useScheduling(lead: CRMLead | null, isOpen: boolean) {
         (d) => d.total_sessions > (d.completed_sessions || 0),
       )
       setDeals(activeDeals)
-
-      // If there are active deals, auto-select session type if desired,
-      // but requirements say pre-select only if passed via props.
-      // We'll just store them for validation.
     } catch (err) {
       console.error('Error fetching deals:', err)
     } finally {
