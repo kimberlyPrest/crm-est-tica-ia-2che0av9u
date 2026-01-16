@@ -1,196 +1,111 @@
-import { useState, useCallback } from 'react'
-import { AppButton } from '@/components/AppButton'
-import { Plus } from 'lucide-react'
-import { useCrmData, CRMLead } from '@/hooks/use-crm-data'
+import { useState } from 'react'
 import { CRMFilterBar } from '@/components/crm/CRMFilterBar'
 import { CRMKanbanBoard } from '@/components/crm/CRMKanbanBoard'
-import { NewLeadModal } from '@/components/crm/NewLeadModal'
-import { LostLeadModal } from '@/components/crm/LostLeadModal'
-import { SaleModal } from '@/components/crm/SaleModal'
 import { LeadDetailsDrawer } from '@/components/crm/LeadDetailsDrawer'
-import { supabase } from '@/lib/supabase/client'
-import { toast } from 'sonner'
-import { useSearchParams } from 'react-router-dom'
+import { SchedulingModal } from '@/components/crm/SchedulingModal'
+import { useCrmData, CRMLead } from '@/hooks/use-crm-data'
+import { Loader2 } from 'lucide-react'
 
 export default function Crm() {
   const {
-    statuses,
     loading,
     error,
     filter,
     setFilter,
     searchQuery,
     setSearchQuery,
+    statuses,
     leadsByStatus,
     refresh,
-    leads,
   } = useCrmData()
 
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [isNewLeadModalOpen, setIsNewLeadModalOpen] = useState(false)
-  const [isLostModalOpen, setIsLostModalOpen] = useState(false)
-  const [isSaleModalOpen, setIsSaleModalOpen] = useState(false)
-
-  // Use local state for selected lead instead of just URL to pass full object
-  // But initialize from URL if needed
   const [selectedLead, setSelectedLead] = useState<CRMLead | null>(null)
-  const [targetStatusId, setTargetStatusId] = useState<string>('')
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
-  // Sync URL with selected lead
+  const [schedulingOpen, setSchedulingOpen] = useState(false)
+  const [schedulingLead, setSchedulingLead] = useState<CRMLead | null>(null)
+  const [schedulingType, setSchedulingType] = useState<
+    'evaluation' | 'session' | undefined
+  >(undefined)
+
   const handleLeadClick = (lead: CRMLead) => {
     setSelectedLead(lead)
-    setSearchParams({ lead_id: lead.id })
+    setDetailsOpen(true)
   }
 
-  const handleCloseDrawer = (open: boolean) => {
-    if (!open) {
-      setSelectedLead(null)
-      setSearchParams({})
-    }
+  const handleSchedule = (lead: CRMLead, type?: 'evaluation' | 'session') => {
+    setSchedulingLead(lead)
+    setSchedulingType(type)
+    setSchedulingOpen(true)
   }
 
-  // Handle Drag & Drop
-  const handleLeadDrop = useCallback(
-    async (lead: CRMLead, newStatusId: string) => {
-      const targetStatus = statuses.find((s) => s.id === newStatusId)
-      if (!targetStatus) return
-
-      // Specific Workflows
-      if (targetStatus.name === 'Perdido') {
-        setSelectedLead(lead)
-        setTargetStatusId(newStatusId)
-        setIsLostModalOpen(true)
-        return
-      }
-
-      if (targetStatus.name === 'Cliente') {
-        setSelectedLead(lead)
-        setTargetStatusId(newStatusId)
-        setIsSaleModalOpen(true)
-        return
-      }
-
-      // Simple Update
-      try {
-        const { error } = await supabase
-          .from('leads')
-          .update({ status_id: newStatusId })
-          .eq('id', lead.id)
-
-        if (error) throw error
-
-        await supabase.from('activities').insert({
-          lead_id: lead.id,
-          type: 'status_change',
-          description: `Moveu para ${targetStatus.name}`,
-        })
-
-        refresh()
-        toast.success(`Movido para ${targetStatus.name}`)
-      } catch (err) {
-        console.error('Error moving lead:', err)
-        toast.error('Erro ao mover lead')
-      }
-    },
-    [statuses, refresh],
-  )
-
-  const handleAction = (action: string, lead: CRMLead) => {
-    if (action === 'lost') {
-      const lostStatus = statuses.find((s) => s.name === 'Perdido')
-      if (lostStatus) {
-        setTargetStatusId(lostStatus.id)
-        setIsLostModalOpen(true)
-      }
-    } else if (action === 'sale') {
-      const clientStatus = statuses.find((s) => s.name === 'Cliente')
-      if (clientStatus) {
-        setTargetStatusId(clientStatus.id)
-        setIsSaleModalOpen(true)
-      }
+  const handleDrawerAction = (action: string, lead: CRMLead) => {
+    if (action === 'schedule') {
+      handleSchedule(lead)
     }
-    // "schedule" handled by something else typically or opens another modal
+    // Handle other actions like 'sale', 'lost' here if needed
   }
 
-  // Check URL for initial lead selection (deep link)
-  useState(() => {
-    const leadId = searchParams.get('lead_id')
-    if (leadId && leads.length > 0) {
-      const lead = leads.find((l) => l.id === leadId)
-      if (lead) setSelectedLead(lead)
-    }
-  })
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin text-brand-lime" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full text-red-500">
+        {error}
+      </div>
+    )
+  }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] space-y-6">
-      {/* Header & Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold text-brand-slate">CRM</h1>
-        <AppButton
-          variant="pill"
-          onClick={() => setIsNewLeadModalOpen(true)}
-          className="bg-brand-lime hover:bg-brand-lime-light text-brand-slate w-full sm:w-auto"
-        >
-          <Plus className="mr-2 h-4 w-4" /> Novo Lead
-        </AppButton>
+    <div className="h-[calc(100vh-theme(spacing.16))] flex flex-col overflow-hidden">
+      {/* Filters */}
+      <div className="px-6 py-4 flex-none">
+        <CRMFilterBar
+          filter={filter}
+          onFilterChange={setFilter}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
       </div>
 
-      {/* Filter Bar */}
-      <CRMFilterBar
-        filter={filter}
-        setFilter={setFilter}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-
-      {/* Content */}
-      {error ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-red-500">
-          <p className="text-lg font-medium mb-4">{error}</p>
-          <AppButton variant="outline" onClick={refresh}>
-            Tentar novamente
-          </AppButton>
-        </div>
-      ) : (
+      {/* Board */}
+      <div className="flex-1 overflow-hidden">
         <CRMKanbanBoard
           statuses={statuses}
           leadsByStatus={leadsByStatus}
-          loading={loading}
-          onLeadDrop={handleLeadDrop}
+          refresh={refresh}
           onLeadClick={handleLeadClick}
+          onSchedule={handleSchedule}
         />
-      )}
+      </div>
 
-      {/* Modals */}
-      <NewLeadModal
-        open={isNewLeadModalOpen}
-        onOpenChange={setIsNewLeadModalOpen}
-        statuses={statuses}
-        onSuccess={refresh}
-      />
-
-      <LostLeadModal
-        open={isLostModalOpen}
-        onOpenChange={setIsLostModalOpen}
-        lead={selectedLead}
-        statusId={targetStatusId}
-        onSuccess={refresh}
-      />
-
-      <SaleModal
-        open={isSaleModalOpen}
-        onOpenChange={setIsSaleModalOpen}
-        lead={selectedLead}
-        statusId={targetStatusId}
-        onSuccess={refresh}
-      />
-
+      {/* Lead Details Drawer */}
       <LeadDetailsDrawer
-        open={!!selectedLead && !isLostModalOpen && !isSaleModalOpen}
-        onOpenChange={handleCloseDrawer}
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
         lead={selectedLead}
         onUpdate={refresh}
-        onAction={handleAction}
+        onAction={handleDrawerAction}
+      />
+
+      {/* Scheduling Modal */}
+      <SchedulingModal
+        open={schedulingOpen}
+        onOpenChange={setSchedulingOpen}
+        lead={schedulingLead}
+        initialType={schedulingType}
+        onSuccess={() => {
+          refresh()
+          if (selectedLead?.id === schedulingLead?.id) {
+            // Optionally refresh details if needed, but refresh() handles the list
+          }
+        }}
       />
     </div>
   )

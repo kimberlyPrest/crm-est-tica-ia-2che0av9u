@@ -376,7 +376,9 @@ export function LeadDetailsDrawer({
                             ? 'bg-amber-400'
                             : activity.type === 'deal_closed'
                               ? 'bg-lime-500'
-                              : 'bg-gray-300',
+                              : activity.type === 'appointment_created'
+                                ? 'bg-sky-500'
+                                : 'bg-gray-300',
                         )}
                       />
                       <div className="space-y-1">

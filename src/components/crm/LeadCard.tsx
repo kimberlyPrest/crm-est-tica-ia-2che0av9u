@@ -18,9 +18,10 @@ import { cn } from '@/lib/utils'
 interface LeadCardProps {
   lead: CRMLead
   onClick?: () => void
+  onSchedule?: (lead: CRMLead) => void
 }
 
-export function LeadCard({ lead, onClick }: LeadCardProps) {
+export function LeadCard({ lead, onClick, onSchedule }: LeadCardProps) {
   const initial = lead.name ? lead.name[0].toUpperCase() : '?'
 
   let timeAgo = ''
@@ -137,6 +138,10 @@ export function LeadCard({ lead, onClick }: LeadCardProps) {
               size="icon"
               className="h-8 w-8 rounded-full bg-brand-sky-light/50 text-brand-sky hover:bg-brand-sky-light hover:text-brand-sky hover:scale-110"
               title="Agendar"
+              onClick={(e) => {
+                e.stopPropagation()
+                onSchedule?.(lead)
+              }}
             >
               <Calendar className="h-4 w-4" />
             </AppButton>
