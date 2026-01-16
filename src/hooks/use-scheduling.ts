@@ -46,6 +46,8 @@ export function useScheduling(
   lead: CRMLead | null,
   isOpen: boolean,
   initialDealId?: string,
+  initialDate?: Date,
+  initialTime?: string,
 ) {
   const [state, setState] = useState<SchedulingState>({
     step: 'details',
@@ -73,21 +75,21 @@ export function useScheduling(
 
   // Reset state when modal opens/closes or lead changes
   useEffect(() => {
-    if (isOpen && lead) {
+    if (isOpen) {
       setState({
         step: 'details',
         type: initialDealId ? 'session' : 'evaluation',
         staffId: null,
-        date: undefined,
-        time: null,
+        date: initialDate || undefined,
+        time: initialTime || null,
         notes: '',
         dealId: initialDealId || null,
       })
       setSlots([])
       fetchStaff()
-      fetchDeals()
+      if (lead) fetchDeals()
     }
-  }, [isOpen, lead, initialDealId])
+  }, [isOpen, lead, initialDealId, initialDate, initialTime])
 
   // Fetch active staff members
   const fetchStaff = async () => {
@@ -185,6 +187,8 @@ export function useScheduling(
   // Generate slots when date or staff changes
   useEffect(() => {
     const generateSlots = async () => {
+      // If we have initial time but no staff selected yet, we can't generate accurate slots
+      // but we should respect the initial state.
       if (!state.staffId || !state.date) {
         setSlots([])
         return
@@ -284,6 +288,20 @@ export function useScheduling(
         setHours(state.date, hours),
         minutes,
       ).toISOString()
+
+      // 2.5 Check for conflicts again (Server side check ideally, but client side for now)
+      const { count: conflictCount } = await supabase
+        .from('appointments')
+        .select('*', { count: 'exact', head: true })
+        .eq('staff_id', state.staffId)
+        .eq('scheduled_at', scheduledAt)
+        .in('status', ['pending', 'confirmed'])
+
+      if (conflictCount && conflictCount > 0) {
+        toast.error('Horário já está ocupado')
+        setSubmitting(false)
+        return
+      }
 
       // 3. Create Appointment
       const { data: appointment, error: apptError } = await supabase
