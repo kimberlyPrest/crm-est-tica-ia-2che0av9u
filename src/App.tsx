@@ -7,6 +7,7 @@ import { AuthGuard } from '@/components/layout/AuthGuard'
 
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import VerifyEmail from './pages/VerifyEmail'
 import Dashboard from './pages/Dashboard'
 import Crm from './pages/Crm'
 import Clientes from './pages/Clientes'
@@ -38,6 +39,14 @@ const App = () => (
             element={
               <AuthGuard>
                 <Signup />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/verify-email"
+            element={
+              <AuthGuard>
+                <VerifyEmail />
               </AuthGuard>
             }
           />

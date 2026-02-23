@@ -36,8 +36,8 @@ const Signup = () => {
         setError('Falha ao criar conta. Verifique os dados e tente novamente.')
         toast.error('Ocorreu um erro ao criar a conta')
       } else {
-        toast.success('Conta criada com sucesso!')
-        navigate('/dashboard')
+        toast.success('Conta criada com sucesso! Verifique seu e-mail.')
+        navigate('/verify-email')
       }
     } catch (err) {
       setError('Ocorreu um erro inesperado')

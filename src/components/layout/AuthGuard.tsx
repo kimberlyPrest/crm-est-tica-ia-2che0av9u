@@ -12,7 +12,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     if (loading) return
 
     const isAuthRoute =
-      location.pathname === '/login' || location.pathname === '/signup'
+      location.pathname === '/login' ||
+      location.pathname === '/signup' ||
+      location.pathname === '/verify-email'
 
     if (!session && !isAuthRoute) {
       navigate('/login', { replace: true })
