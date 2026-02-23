@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (error) {
           console.error('Session error on load:', error)
-          await supabase.auth.signOut()
+          await supabase.auth.signOut({ scope: 'local' }).catch(() => {})
           if (mounted) {
             setSession(null)
             setUser(null)
@@ -156,13 +156,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (!error) {
-      setSession(null)
-      setUser(null)
-      setOrganizationId(null)
+    // Attempt global sign out first
+    const { error } = await supabase.auth.signOut({ scope: 'global' })
+
+    let finalError = error
+
+    if (error) {
+      console.error('Sign out error:', error)
+      const isSessionNotFoundError =
+        error.status === 403 ||
+        error.message?.includes('session_not_found') ||
+        error.message?.includes(
+          'Session from session_id claim in JWT does not exist',
+        ) ||
+        (error as any).code === 'session_not_found'
+
+      if (isSessionNotFoundError) {
+        // If the server returns a session not found error, intercept it.
+        // We force a local sign-out to clean up local storage/tokens.
+        await supabase.auth.signOut({ scope: 'local' }).catch(() => {})
+        // Nullify the error so the application gracefully redirects instead of crashing.
+        finalError = null
+      }
     }
-    return { error }
+
+    // Always proceed to clear all local authentication state to guarantee redirection.
+    setSession(null)
+    setUser(null)
+    setOrganizationId(null)
+
+    return { error: finalError }
   }
 
   const value = {
