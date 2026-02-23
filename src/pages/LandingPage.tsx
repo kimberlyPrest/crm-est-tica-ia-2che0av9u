@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Menu, X, Star, ArrowRight, Plus } from 'lucide-react';
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Check, Menu, X, Star, ArrowRight, Plus } from 'lucide-react'
 
 // --- Components ---
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#eef0ee]/85 backdrop-blur-md border-b border-gray-200">
@@ -86,12 +86,15 @@ const Navbar = () => {
         )}
       </AnimatePresence>
     </nav>
-  );
-};
+  )
+}
 
 const Hero = () => {
   return (
-    <section id="hero" className="pt-[120px] pb-20 min-h-screen flex items-center">
+    <section
+      id="hero"
+      className="pt-[120px] pb-20 min-h-screen flex items-center"
+    >
       <div className="max-w-[1100px] mx-auto px-6 w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           {/* Copy */}
@@ -113,9 +116,11 @@ const Hero = () => {
             </h1>
             <p className="text-[17px] text-[#4b5563] leading-[1.7] mb-9 max-w-[440px]">
               Enquanto sua concorrente ainda está digitando{' '}
-              <em className="not-italic text-[#1a1a1a] font-medium">"Olá, tudo bem?"</em>, o
-              ClinicAI já qualificou, educou e agendou o mesmo cliente — em menos de 5 segundos, com
-              a voz da sua marca.
+              <em className="not-italic text-[#1a1a1a] font-medium">
+                "Olá, tudo bem?"
+              </em>
+              , o ClinicAI já qualificou, educou e agendou o mesmo cliente — em
+              menos de 5 segundos, com a voz da sua marca.
             </p>
             <div className="flex flex-wrap gap-3 mb-10">
               <a
@@ -148,7 +153,9 @@ const Hero = () => {
                   +
                 </div>
               </div>
-              <p className="text-[13px] text-[#9ca3af]">+200 clínicas já convertendo mais com ClinicAI</p>
+              <p className="text-[13px] text-[#9ca3af]">
+                +200 clínicas já convertendo mais com ClinicAI
+              </p>
             </div>
           </motion.div>
 
@@ -164,13 +171,16 @@ const Hero = () => {
                   🤖
                 </div>
                 <div>
-                  <p className="font-display font-bold text-sm">Lara · ClinicAI</p>
+                  <p className="font-display font-bold text-sm">
+                    Lara · ClinicAI
+                  </p>
                   <p className="text-[11px] opacity-70 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-[#84CC16] rounded-full"></span> Online agora
+                    <span className="w-1.5 h-1.5 bg-[#84CC16] rounded-full"></span>{' '}
+                    Online agora
                   </p>
                 </div>
               </div>
-              <motion.div 
+              <motion.div
                 className="bg-[#f0f2f0] p-4 flex flex-col gap-2.5 min-h-[300px]"
                 initial="hidden"
                 whileInView="visible"
@@ -181,40 +191,70 @@ const Hero = () => {
                     opacity: 1,
                     transition: {
                       staggerChildren: 1.5,
-                      delayChildren: 0.8
-                    }
-                  }
+                      delayChildren: 0.8,
+                    },
+                  },
                 }}
               >
-                <motion.div className="flex justify-end" variants={{ hidden: { opacity: 0, y: 10, scale: 0.95 }, visible: { opacity: 1, y: 0, scale: 1 } }}>
+                <motion.div
+                  className="flex justify-end"
+                  variants={{
+                    hidden: { opacity: 0, y: 10, scale: 0.95 },
+                    visible: { opacity: 1, y: 0, scale: 1 },
+                  }}
+                >
                   <div>
                     <div className="bg-[#005c4b] text-white rounded-[18px_18px_4px_18px] px-3.5 py-2.5 text-[13.5px] leading-relaxed font-medium max-w-[82%] ml-auto">
                       Quanto custa o botox?
                     </div>
-                    <p className="text-[10px] text-[#9ca3af] mt-1 text-right">10:42 ✓✓</p>
+                    <p className="text-[10px] text-[#9ca3af] mt-1 text-right">
+                      10:42 ✓✓
+                    </p>
                   </div>
                 </motion.div>
-                <motion.div className="flex justify-start" variants={{ hidden: { opacity: 0, y: 10, scale: 0.95 }, visible: { opacity: 1, y: 0, scale: 1 } }}>
+                <motion.div
+                  className="flex justify-start"
+                  variants={{
+                    hidden: { opacity: 0, y: 10, scale: 0.95 },
+                    visible: { opacity: 1, y: 0, scale: 1 },
+                  }}
+                >
                   <div>
                     <div className="bg-white text-[#1a1a1a] rounded-[18px_18px_18px_4px] px-3.5 py-2.5 text-[13.5px] leading-relaxed shadow-[0_1px_4px_rgba(0,0,0,0.06)] max-w-[82%]">
-                      Oi! 🌿 A partir de R$890. A Dra. Ana gravou um áudio explicando como funciona
-                      aqui — quer ouvir antes de decidir?
+                      Oi! 🌿 A partir de R$890. A Dra. Ana gravou um áudio
+                      explicando como funciona aqui — quer ouvir antes de
+                      decidir?
                     </div>
                     <p className="text-[10px] text-[#9ca3af] mt-1">10:42</p>
                   </div>
                 </motion.div>
-                <motion.div className="flex justify-end" variants={{ hidden: { opacity: 0, y: 10, scale: 0.95 }, visible: { opacity: 1, y: 0, scale: 1 } }}>
+                <motion.div
+                  className="flex justify-end"
+                  variants={{
+                    hidden: { opacity: 0, y: 10, scale: 0.95 },
+                    visible: { opacity: 1, y: 0, scale: 1 },
+                  }}
+                >
                   <div>
                     <div className="bg-[#005c4b] text-white rounded-[18px_18px_4px_18px] px-3.5 py-2.5 text-[13.5px] leading-relaxed font-medium max-w-[82%] ml-auto">
                       Sim! Tem horário amanhã à tarde?
                     </div>
-                    <p className="text-[10px] text-[#9ca3af] mt-1 text-right">10:43 ✓✓</p>
+                    <p className="text-[10px] text-[#9ca3af] mt-1 text-right">
+                      10:43 ✓✓
+                    </p>
                   </div>
                 </motion.div>
-                <motion.div className="flex justify-start" variants={{ hidden: { opacity: 0, y: 10, scale: 0.95 }, visible: { opacity: 1, y: 0, scale: 1 } }}>
+                <motion.div
+                  className="flex justify-start"
+                  variants={{
+                    hidden: { opacity: 0, y: 10, scale: 0.95 },
+                    visible: { opacity: 1, y: 0, scale: 1 },
+                  }}
+                >
                   <div>
                     <div className="bg-white text-[#1a1a1a] rounded-[18px_18px_18px_4px] px-3.5 py-2.5 text-[13.5px] leading-relaxed shadow-[0_1px_4px_rgba(0,0,0,0.06)] max-w-[82%]">
-                      Temos às 14h e 16h30 🗓️ Qual prefere? Já bloqueio na agenda!
+                      Temos às 14h e 16h30 🗓️ Qual prefere? Já bloqueio na
+                      agenda!
                     </div>
                     <p className="text-[10px] text-[#9ca3af] mt-1">10:43</p>
                   </div>
@@ -226,7 +266,7 @@ const Hero = () => {
                 <span className="text-xl grayscale opacity-50">🎤</span>
               </div>
             </div>
-            <motion.div 
+            <motion.div
               className="flex items-center gap-2 bg-white rounded-2xl px-4 py-2.5 shadow-[0_4px_40px_rgba(0,0,0,0.07)] mt-3 max-w-[220px] mx-auto"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -241,8 +281,8 @@ const Hero = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 const Ticker = () => {
   return (
@@ -279,14 +319,13 @@ const Ticker = () => {
         }
       `}</style>
     </div>
-  );
-};
+  )
+}
 
 const ProblemSection = () => {
   return (
     <section id="problema" className="py-20">
       <div className="max-w-[1100px] mx-auto px-6">
-        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
           {/* Left Column: Text */}
           <div>
@@ -297,12 +336,13 @@ const ProblemSection = () => {
               Você investe R$3.000
               <br />
               em anúncio.
-              <br />
-              O lead chega. <span className="text-[#ef4444]">E some.</span>
+              <br />O lead chega.{' '}
+              <span className="text-[#ef4444]">E some.</span>
             </h2>
             <p className="text-lg text-[#4b5563] leading-[1.7]">
-              Não é falta de interesse do cliente. É falta de velocidade da sua operação. Cada minuto
-              de silêncio no WhatsApp vale dinheiro — e você está pagando esse preço.
+              Não é falta de interesse do cliente. É falta de velocidade da sua
+              operação. Cada minuto de silêncio no WhatsApp vale dinheiro — e
+              você está pagando esse preço.
             </p>
           </div>
 
@@ -316,12 +356,14 @@ const ProblemSection = () => {
           >
             {/* Green accent bar */}
             <div className="absolute left-0 top-12 bottom-12 w-1.5 bg-[#84CC16] rounded-r-full"></div>
-            
+
             <div className="pl-8">
               <p className="font-display text-[22px] md:text-2xl font-medium italic text-[#1a1a1a] leading-relaxed mb-6">
                 "A demora em responder leads custa até{' '}
-                <span className="text-[#84CC16] font-bold not-italic">70% das oportunidades</span> de venda em clínicas de
-                estética."
+                <span className="text-[#84CC16] font-bold not-italic">
+                  70% das oportunidades
+                </span>{' '}
+                de venda em clínicas de estética."
               </p>
               <p className="text-xs text-[#9ca3af] font-bold uppercase tracking-widest flex items-center gap-2">
                 — Harvard Business Review
@@ -362,14 +404,16 @@ const ProblemSection = () => {
               <h3 className="font-display font-extrabold text-[17px] text-[#1a1a1a] mb-2">
                 {item.title}
               </h3>
-              <p className="text-sm text-[#4b5563] leading-[1.65]">{item.desc}</p>
+              <p className="text-sm text-[#4b5563] leading-[1.65]">
+                {item.desc}
+              </p>
             </motion.div>
           ))}
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 const SolutionSection = () => {
   return (
@@ -382,12 +426,13 @@ const SolutionSection = () => {
           </span>
           <h2 className="font-display font-extrabold text-[clamp(28px,4vw,48px)] leading-[1.15] text-[#1a1a1a] tracking-tight my-3.5">
             Não é automação.
-            <br />
-            É uma recepcionista <span className="text-[#84CC16]">que pensa.</span>
+            <br />É uma recepcionista{' '}
+            <span className="text-[#84CC16]">que pensa.</span>
           </h2>
           <p className="text-base text-[#4b5563] max-w-[520px] mx-auto leading-[1.7]">
-            Qualquer ferramenta envia mensagem automática. O ClinicAI entende o contexto, raciocina
-            e toma a ação certa — como uma profissional treinada faria.
+            Qualquer ferramenta envia mensagem automática. O ClinicAI entende o
+            contexto, raciocina e toma a ação certa — como uma profissional
+            treinada faria.
           </p>
         </div>
 
@@ -413,8 +458,8 @@ const SolutionSection = () => {
               <em className="not-italic font-semibold">
                 "tenho medo de agulha mas quero resultado"
               </em>
-              , a IA não joga um menu. Ela acolhe, envia o áudio certo da Dra. e guia até o
-              agendamento — com naturalidade real.
+              , a IA não joga um menu. Ela acolhe, envia o áudio certo da Dra. e
+              guia até o agendamento — com naturalidade real.
             </p>
             <p className="mt-3.5 text-xs font-bold text-[#3a6b00]">
               ⚡ Powered by Google Gemini Flash
@@ -458,14 +503,16 @@ const SolutionSection = () => {
               <h3 className="font-display font-extrabold text-xl text-[#1a1a1a] mb-2.5">
                 {item.title}
               </h3>
-              <p className="text-sm text-[#4b5563] leading-[1.7]">{item.desc}</p>
+              <p className="text-sm text-[#4b5563] leading-[1.7]">
+                {item.desc}
+              </p>
             </motion.div>
           ))}
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 const MetricsSection = () => {
   return (
@@ -561,8 +608,8 @@ const MetricsSection = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 const HowItWorks = () => {
   return (
@@ -579,8 +626,8 @@ const HowItWorks = () => {
             <span className="text-[#84CC16]">sem intervenção humana</span>
           </h2>
           <p className="text-base text-[#4b5563] max-w-[520px] mx-auto leading-[1.7]">
-            Do primeiro "oi" ao horário bloqueado na grade — automático, humanizado e com o tom da
-            sua clínica.
+            Do primeiro "oi" ao horário bloqueado na grade — automático,
+            humanizado e com o tom da sua clínica.
           </p>
         </div>
 
@@ -621,15 +668,17 @@ const HowItWorks = () => {
                 <h3 className="font-display font-bold text-[19px] text-[#1a1a1a] mb-2 pt-3">
                   {step.title}
                 </h3>
-                <p className="text-sm text-[#4b5563] leading-[1.7]">{step.desc}</p>
+                <p className="text-sm text-[#4b5563] leading-[1.7]">
+                  {step.desc}
+                </p>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 const Testimonials = () => {
   const testimonials = [
@@ -637,29 +686,29 @@ const Testimonials = () => {
       name: 'Ana Costa',
       role: 'Gestora de Clínica',
       text: 'Reduzimos nosso custo com recepção em 40% e aumentamos a conversão em 25% no primeiro mês.',
-      img: 'https://picsum.photos/seed/ana/200/200'
+      img: 'https://picsum.photos/seed/ana/200/200',
     },
     {
       name: 'Dr. Pedro Santos',
       role: 'Cirurgião Plástico',
       text: 'A integração com o CRM Kanban facilitou muito a vida da minha equipe de vendas. Tudo automático.',
-      img: 'https://picsum.photos/seed/pedro/200/200'
+      img: 'https://picsum.photos/seed/pedro/200/200',
     },
     {
       name: 'Dra. Sarah Miller',
       role: 'Harmonização Facial',
       text: 'Antes eu perdia leads de fim de semana. Agora chego na segunda-feira com 5 consultas já pagas na agenda.',
-      img: 'https://picsum.photos/seed/sarah/200/200'
+      img: 'https://picsum.photos/seed/sarah/200/200',
     },
     {
       name: 'Dr. Marcos Silva',
       role: 'Dermatologista',
       text: 'A IA é impressionante. Ela entende o que o paciente quer saber preço e conduz para a avaliação de forma sutil.',
-      img: 'https://picsum.photos/seed/marcos/200/200'
+      img: 'https://picsum.photos/seed/marcos/200/200',
     },
-  ];
+  ]
 
-  const scrollList = [...testimonials, ...testimonials, ...testimonials];
+  const scrollList = [...testimonials, ...testimonials, ...testimonials]
 
   return (
     <section id="depoimentos" className="py-20 overflow-hidden">
@@ -670,7 +719,8 @@ const Testimonials = () => {
             Resultados Reais
           </span>
           <h2 className="font-display font-extrabold text-[clamp(28px,4vw,48px)] leading-[1.15] text-[#1a1a1a] tracking-tight my-3.5">
-            Clínicas que pararam de <span className="text-[#84CC16]">perder lead</span>
+            Clínicas que pararam de{' '}
+            <span className="text-[#84CC16]">perder lead</span>
           </h2>
         </div>
       </div>
@@ -682,21 +732,31 @@ const Testimonials = () => {
             className="bg-white rounded-[28px] p-8 shadow-[0_4px_40px_rgba(0,0,0,0.07)] w-[400px] mx-4 flex flex-col shrink-0"
           >
             <div className="flex items-center gap-4 mb-6">
-              <img 
-                src={item.img} 
+              <img
+                src={item.img}
                 alt={item.name}
                 className="w-14 h-14 rounded-full object-cover"
                 referrerPolicy="no-referrer"
               />
               <div>
-                <h3 className="font-display font-bold text-lg text-[#1a1a1a]">{item.name}</h3>
-                <p className="text-sm text-[#84CC16] font-medium">{item.role}</p>
+                <h3 className="font-display font-bold text-lg text-[#1a1a1a]">
+                  {item.name}
+                </h3>
+                <p className="text-sm text-[#84CC16] font-medium">
+                  {item.role}
+                </p>
               </div>
             </div>
-            <p className="text-[#4b5563] italic leading-relaxed mb-8 flex-grow">"{item.text}"</p>
+            <p className="text-[#4b5563] italic leading-relaxed mb-8 flex-grow">
+              "{item.text}"
+            </p>
             <div className="flex gap-1">
               {[...Array(5)].map((_, j) => (
-                <Star key={j} size={18} className="fill-[#fbbf24] text-[#fbbf24]" />
+                <Star
+                  key={j}
+                  size={18}
+                  className="fill-[#fbbf24] text-[#fbbf24]"
+                />
               ))}
             </div>
           </div>
@@ -715,8 +775,8 @@ const Testimonials = () => {
         }
       `}</style>
     </section>
-  );
-};
+  )
+}
 
 const WhoIsItFor = () => {
   return (
@@ -729,7 +789,8 @@ const WhoIsItFor = () => {
           </span>
           <h2 className="font-display font-extrabold text-[clamp(28px,4vw,48px)] leading-[1.15] text-[#1a1a1a] tracking-tight my-3.5">
             Feito para quem paga para trazer cliente
-            <br />e quer ver isso <span className="text-[#84CC16]">virar lucro</span>
+            <br />e quer ver isso{' '}
+            <span className="text-[#84CC16]">virar lucro</span>
           </h2>
         </div>
 
@@ -778,11 +839,18 @@ const WhoIsItFor = () => {
               <h3 className="font-display font-extrabold text-xl text-[#1a1a1a] mb-2.5">
                 {item.title}
               </h3>
-              <p className="text-sm text-[#4b5563] leading-[1.7] mb-6">{item.desc}</p>
+              <p className="text-sm text-[#4b5563] leading-[1.7] mb-6">
+                {item.desc}
+              </p>
               <ul className="flex flex-col gap-2.5">
                 {item.checks.map((check, j) => (
-                  <li key={j} className="flex items-start gap-2.5 text-sm text-[#4b5563]">
-                    <span className="text-[#84CC16] font-extrabold text-sm mt-px">✓</span>
+                  <li
+                    key={j}
+                    className="flex items-start gap-2.5 text-sm text-[#4b5563]"
+                  >
+                    <span className="text-[#84CC16] font-extrabold text-sm mt-px">
+                      ✓
+                    </span>
                     {check}
                   </li>
                 ))}
@@ -792,8 +860,8 @@ const WhoIsItFor = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 const FAQ = () => {
   return (
@@ -850,8 +918,8 @@ const FAQ = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 const CTA = () => {
   return (
@@ -876,8 +944,9 @@ const CTA = () => {
             vai perder essa semana?
           </h2>
           <p className="text-[17px] text-[#3a4a20] max-w-[500px] mx-auto leading-[1.7] mb-9 relative z-10">
-            Cada dia sem o ClinicAI é mais um lead respondido 4 horas depois, mais uma quinta-feira
-            com horário vazio, mais uma campanha que não converteu o que devia.
+            Cada dia sem o ClinicAI é mais um lead respondido 4 horas depois,
+            mais uma quinta-feira com horário vazio, mais uma campanha que não
+            converteu o que devia.
           </p>
           <div className="flex flex-wrap justify-center gap-3 relative z-10">
             <a
@@ -889,13 +958,14 @@ const CTA = () => {
             </a>
           </div>
           <p className="text-[13px] text-[#5a7030] mt-5 relative z-10">
-            Demo gratuita · Setup em até 48h · Garantia de 7 dias · Sem contrato de fidelidade
+            Demo gratuita · Setup em até 48h · Garantia de 7 dias · Sem contrato
+            de fidelidade
           </p>
         </motion.div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 const Footer = () => {
   return (
@@ -924,12 +994,13 @@ const Footer = () => {
           ))}
         </ul>
         <p className="text-xs text-[#374151] text-center">
-          © {new Date().getFullYear()} ClinicAI Tecnologia LTDA · Todos os direitos reservados
+          © {new Date().getFullYear()} ClinicAI Tecnologia LTDA · Todos os
+          direitos reservados
         </p>
       </div>
     </footer>
-  );
-};
+  )
+}
 
 export default function LandingPage() {
   return (
@@ -947,5 +1018,5 @@ export default function LandingPage() {
       <CTA />
       <Footer />
     </div>
-  );
+  )
 }

@@ -234,10 +234,10 @@ export default function FilesPage() {
                         ))}
                         {(!audio.trigger_keywords ||
                           audio.trigger_keywords.length === 0) && (
-                            <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full border border-gray-200">
-                              Sem gatilhos
-                            </span>
-                          )}
+                          <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full border border-gray-200">
+                            Sem gatilhos
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
