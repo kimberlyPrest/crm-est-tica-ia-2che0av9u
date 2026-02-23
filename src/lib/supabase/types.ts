@@ -11,7 +11,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '14.1'
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
@@ -22,7 +22,9 @@ export type Database = {
           id: string
           lead_id: string | null
           metadata: Json | null
+          organization_id: string
           type: string
+          whatsapp_instance_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -30,7 +32,9 @@ export type Database = {
           id?: string
           lead_id?: string | null
           metadata?: Json | null
+          organization_id?: string
           type: string
+          whatsapp_instance_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -38,20 +42,37 @@ export type Database = {
           id?: string
           lead_id?: string | null
           metadata?: Json | null
+          organization_id?: string
           type?: string
+          whatsapp_instance_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: 'activities_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "activities_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activities_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activities_whatsapp_instance_id_fkey"
+            columns: ["whatsapp_instance_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
           },
         ]
       }
       agent_config: {
         Row: {
+          active_whatsapp_instance_id: string | null
           agent_name: string
           auto_schedule_enabled: boolean
           auto_schedule_end_time: string | null
@@ -65,15 +86,13 @@ export type Database = {
           id: string
           is_enabled: boolean
           knowledge_instructions: string | null
+          organization_id: string
           role_definition: string | null
           tone: string | null
           updated_at: string | null
-          webhook_verify_token: string | null
-          whatsapp_api_key: string | null
-          whatsapp_business_account_id: string | null
-          whatsapp_phone_number_id: string | null
         }
         Insert: {
+          active_whatsapp_instance_id?: string | null
           agent_name?: string
           auto_schedule_enabled?: boolean
           auto_schedule_end_time?: string | null
@@ -87,15 +106,13 @@ export type Database = {
           id?: string
           is_enabled?: boolean
           knowledge_instructions?: string | null
+          organization_id?: string
           role_definition?: string | null
           tone?: string | null
           updated_at?: string | null
-          webhook_verify_token?: string | null
-          whatsapp_api_key?: string | null
-          whatsapp_business_account_id?: string | null
-          whatsapp_phone_number_id?: string | null
         }
         Update: {
+          active_whatsapp_instance_id?: string | null
           agent_name?: string
           auto_schedule_enabled?: boolean
           auto_schedule_end_time?: string | null
@@ -109,15 +126,27 @@ export type Database = {
           id?: string
           is_enabled?: boolean
           knowledge_instructions?: string | null
+          organization_id?: string
           role_definition?: string | null
           tone?: string | null
           updated_at?: string | null
-          webhook_verify_token?: string | null
-          whatsapp_api_key?: string | null
-          whatsapp_business_account_id?: string | null
-          whatsapp_phone_number_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "agent_config_active_whatsapp_instance_id_fkey"
+            columns: ["active_whatsapp_instance_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_config_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       appointments: {
         Row: {
@@ -125,6 +154,7 @@ export type Database = {
           id: string
           lead_id: string
           notes: string | null
+          organization_id: string
           scheduled_at: string
           staff_id: string | null
           status: string
@@ -136,6 +166,7 @@ export type Database = {
           id?: string
           lead_id: string
           notes?: string | null
+          organization_id?: string
           scheduled_at: string
           staff_id?: string | null
           status?: string
@@ -147,6 +178,7 @@ export type Database = {
           id?: string
           lead_id?: string
           notes?: string | null
+          organization_id?: string
           scheduled_at?: string
           staff_id?: string | null
           status?: string
@@ -155,18 +187,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'appointments_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "appointments_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'appointments_staff_id_fkey'
-            columns: ['staff_id']
+            foreignKeyName: "appointments_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'users'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -197,18 +236,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'cadence_logs_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "cadence_logs_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'cadence_logs_template_id_fkey'
-            columns: ['template_id']
+            foreignKeyName: "cadence_logs_template_id_fkey"
+            columns: ["template_id"]
             isOneToOne: false
-            referencedRelation: 'cadence_templates'
-            referencedColumns: ['id']
+            referencedRelation: "cadence_templates"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -220,6 +259,7 @@ export type Database = {
           is_active: boolean
           message_template: string
           name: string
+          organization_id: string
           trigger_status: string[]
           updated_at: string | null
         }
@@ -230,6 +270,7 @@ export type Database = {
           is_active?: boolean
           message_template: string
           name: string
+          organization_id?: string
           trigger_status: string[]
           updated_at?: string | null
         }
@@ -240,10 +281,19 @@ export type Database = {
           is_active?: boolean
           message_template?: string
           name?: string
+          organization_id?: string
           trigger_status?: string[]
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cadence_templates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       deal_sessions: {
         Row: {
@@ -275,18 +325,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'deal_sessions_appointment_id_fkey'
-            columns: ['appointment_id']
+            foreignKeyName: "deal_sessions_appointment_id_fkey"
+            columns: ["appointment_id"]
             isOneToOne: false
-            referencedRelation: 'appointments'
-            referencedColumns: ['id']
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'deal_sessions_deal_id_fkey'
-            columns: ['deal_id']
+            foreignKeyName: "deal_sessions_deal_id_fkey"
+            columns: ["deal_id"]
             isOneToOne: false
-            referencedRelation: 'deals'
-            referencedColumns: ['id']
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -298,6 +348,7 @@ export type Database = {
           id: string
           lead_id: string
           next_session_due: string | null
+          organization_id: string
           payment_method: string | null
           product_id: string
           purchase_date: string
@@ -313,6 +364,7 @@ export type Database = {
           id?: string
           lead_id: string
           next_session_due?: string | null
+          organization_id?: string
           payment_method?: string | null
           product_id: string
           purchase_date?: string
@@ -328,6 +380,7 @@ export type Database = {
           id?: string
           lead_id?: string
           next_session_due?: string | null
+          organization_id?: string
           payment_method?: string | null
           product_id?: string
           purchase_date?: string
@@ -338,18 +391,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'deals_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "deals_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'deals_product_id_fkey'
-            columns: ['product_id']
+            foreignKeyName: "deals_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'products'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -359,6 +419,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          organization_id: string
           trigger_keywords: string[] | null
           uploaded_at: string | null
         }
@@ -367,6 +428,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          organization_id?: string
           trigger_keywords?: string[] | null
           uploaded_at?: string | null
         }
@@ -375,10 +437,19 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          organization_id?: string
           trigger_keywords?: string[] | null
           uploaded_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_base_audios_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       knowledge_base_files: {
         Row: {
@@ -387,6 +458,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          organization_id: string
           uploaded_at: string | null
         }
         Insert: {
@@ -395,6 +467,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          organization_id?: string
           uploaded_at?: string | null
         }
         Update: {
@@ -403,9 +476,18 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          organization_id?: string
           uploaded_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_base_files_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leads: {
         Row: {
@@ -417,6 +499,7 @@ export type Database = {
           last_interaction_at: string | null
           name: string | null
           notes: string | null
+          organization_id: string
           phone: string
           status_id: string
           tags: string[] | null
@@ -431,6 +514,7 @@ export type Database = {
           last_interaction_at?: string | null
           name?: string | null
           notes?: string | null
+          organization_id?: string
           phone: string
           status_id: string
           tags?: string[] | null
@@ -445,6 +529,7 @@ export type Database = {
           last_interaction_at?: string | null
           name?: string | null
           notes?: string | null
+          organization_id?: string
           phone?: string
           status_id?: string
           tags?: string[] | null
@@ -452,11 +537,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'leads_status_id_fkey'
-            columns: ['status_id']
+            foreignKeyName: "leads_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'status'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_status_id_fkey"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "status"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -469,8 +561,10 @@ export type Database = {
           lead_id: string
           message_type: string
           meta_message_id: string | null
+          organization_id: string
           read_at: string | null
           sent_by: string
+          whatsapp_instance_id: string | null
         }
         Insert: {
           content: string
@@ -480,8 +574,10 @@ export type Database = {
           lead_id: string
           message_type?: string
           meta_message_id?: string | null
+          organization_id?: string
           read_at?: string | null
           sent_by: string
+          whatsapp_instance_id?: string | null
         }
         Update: {
           content?: string
@@ -491,16 +587,32 @@ export type Database = {
           lead_id?: string
           message_type?: string
           meta_message_id?: string | null
+          organization_id?: string
           read_at?: string | null
           sent_by?: string
+          whatsapp_instance_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: 'messages_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "messages_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_whatsapp_instance_id_fkey"
+            columns: ["whatsapp_instance_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -512,6 +624,7 @@ export type Database = {
           lead_id: string
           message: string
           metadata: Json | null
+          organization_id: string
           priority: string
           read_at: string | null
           title: string
@@ -524,6 +637,7 @@ export type Database = {
           lead_id: string
           message: string
           metadata?: Json | null
+          organization_id?: string
           priority?: string
           read_at?: string | null
           title: string
@@ -536,6 +650,7 @@ export type Database = {
           lead_id?: string
           message?: string
           metadata?: Json | null
+          organization_id?: string
           priority?: string
           read_at?: string | null
           title?: string
@@ -543,13 +658,41 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'notifications_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "notifications_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
+      }
+      organizations: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       products: {
         Row: {
@@ -558,6 +701,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          organization_id: string
           return_interval_days: number
           total_sessions: number
           updated_at: string | null
@@ -568,6 +712,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          organization_id?: string
           return_interval_days?: number
           total_sessions?: number
           updated_at?: string | null
@@ -578,11 +723,20 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          organization_id?: string
           return_interval_days?: number
           total_sessions?: number
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       staff_availability: {
         Row: {
@@ -591,6 +745,7 @@ export type Database = {
           end_time: string
           id: string
           is_active: boolean
+          organization_id: string
           staff_id: string
           start_time: string
         }
@@ -600,6 +755,7 @@ export type Database = {
           end_time: string
           id?: string
           is_active?: boolean
+          organization_id?: string
           staff_id: string
           start_time: string
         }
@@ -609,16 +765,24 @@ export type Database = {
           end_time?: string
           id?: string
           is_active?: boolean
+          organization_id?: string
           staff_id?: string
           start_time?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'staff_availability_staff_id_fkey'
-            columns: ['staff_id']
+            foreignKeyName: "staff_availability_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'users'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_availability_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -631,6 +795,7 @@ export type Database = {
           is_system: boolean
           name: string
           order: number
+          organization_id: string
         }
         Insert: {
           color?: string
@@ -640,6 +805,7 @@ export type Database = {
           is_system?: boolean
           name: string
           order?: number
+          organization_id?: string
         }
         Update: {
           color?: string
@@ -649,8 +815,17 @@ export type Database = {
           is_system?: boolean
           name?: string
           order?: number
+          organization_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "status_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {
@@ -659,6 +834,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          organization_id: string
           role: string
           updated_at: string | null
         }
@@ -668,6 +844,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          organization_id: string
           role?: string
           updated_at?: string | null
         }
@@ -677,10 +854,84 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          organization_id?: string
           role?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "users_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_instances: {
+        Row: {
+          connection_error_message: string | null
+          connection_status: string
+          created_at: string | null
+          id: string
+          instance_name: string
+          last_checked_at: string | null
+          last_connected_at: string | null
+          last_disconnected_at: string | null
+          metadata: Json | null
+          organization_id: string
+          phone_number: string | null
+          profile_name: string | null
+          profile_picture_url: string | null
+          qr_code: string | null
+          updated_at: string | null
+          webhook_url: string | null
+        }
+        Insert: {
+          connection_error_message?: string | null
+          connection_status?: string
+          created_at?: string | null
+          id?: string
+          instance_name: string
+          last_checked_at?: string | null
+          last_connected_at?: string | null
+          last_disconnected_at?: string | null
+          metadata?: Json | null
+          organization_id?: string
+          phone_number?: string | null
+          profile_name?: string | null
+          profile_picture_url?: string | null
+          qr_code?: string | null
+          updated_at?: string | null
+          webhook_url?: string | null
+        }
+        Update: {
+          connection_error_message?: string | null
+          connection_status?: string
+          created_at?: string | null
+          id?: string
+          instance_name?: string
+          last_checked_at?: string | null
+          last_connected_at?: string | null
+          last_disconnected_at?: string | null
+          metadata?: Json | null
+          organization_id?: string
+          phone_number?: string | null
+          profile_name?: string | null
+          profile_picture_url?: string | null
+          qr_code?: string | null
+          updated_at?: string | null
+          webhook_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_instances_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       whatsapp_webhooks: {
         Row: {
@@ -688,48 +939,68 @@ export type Database = {
           id: string
           lead_id: string | null
           message_id: string | null
+          organization_id: string
           processed: boolean
           processed_at: string | null
           processing_error: string | null
           raw_payload: Json
           webhook_type: string
+          whatsapp_instance_id: string | null
         }
         Insert: {
           created_at?: string | null
           id?: string
           lead_id?: string | null
           message_id?: string | null
+          organization_id?: string
           processed?: boolean
           processed_at?: string | null
           processing_error?: string | null
           raw_payload: Json
           webhook_type: string
+          whatsapp_instance_id?: string | null
         }
         Update: {
           created_at?: string | null
           id?: string
           lead_id?: string | null
           message_id?: string | null
+          organization_id?: string
           processed?: boolean
           processed_at?: string | null
           processing_error?: string | null
           raw_payload?: Json
           webhook_type?: string
+          whatsapp_instance_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: 'whatsapp_webhooks_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "whatsapp_webhooks_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'whatsapp_webhooks_message_id_fkey'
-            columns: ['message_id']
+            foreignKeyName: "whatsapp_webhooks_message_id_fkey"
+            columns: ["message_id"]
             isOneToOne: false
-            referencedRelation: 'messages'
-            referencedColumns: ['id']
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_webhooks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_webhooks_whatsapp_instance_id_fkey"
+            columns: ["whatsapp_instance_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -754,6 +1025,7 @@ export type Database = {
         Args: { key?: string; secret: string }
         Returns: string
       }
+      get_auth_org_id: { Args: never; Returns: string }
       get_available_slots: {
         Args: {
           p_date: string
@@ -775,7 +1047,7 @@ export type Database = {
         Returns: Json
       }
       show_limit: { Args: never; Returns: number }
-      show_trgm: { Args: { '': string }; Returns: string[] }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       [_ in never]: never
@@ -786,33 +1058,33 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])
-    ? (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -821,23 +1093,23 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -846,23 +1118,23 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -871,36 +1143,36 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema['Enums']
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema['CompositeTypes']
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
@@ -908,3 +1180,9 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+
+// ====== DATABASE EXTENDED CONTEXT (auto-generated) ======
+// This section contains constraints, RLS policies, functions, triggers,
+// indexes and materialized views not present in the type definitions above.
+
