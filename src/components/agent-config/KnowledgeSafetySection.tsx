@@ -34,7 +34,6 @@ export function KnowledgeSafetySection({
         )
       }
     } else {
-      // Simple remove logic (might need improvement for complex edits)
       onChange(
         'human_handover_rules',
         current.replace(new RegExp(`- ${rule}\\n?`), '').trim(),
@@ -57,14 +56,14 @@ export function KnowledgeSafetySection({
             Oriente a IA sobre como usar os arquivos carregados na plataforma.
           </p>
           <Textarea
-            value={config.knowledge_instructions}
+            value={config.knowledge_instructions || ''}
             onChange={(e) => onChange('knowledge_instructions', e.target.value)}
             maxLength={600}
             placeholder="Ex: Consulte o arquivo 'Tabela de Preços 2024' para responder sobre valores..."
             className="min-h-[150px]"
           />
           <div className="text-right text-xs text-gray-400">
-            {config.knowledge_instructions.length}/600
+            {config.knowledge_instructions?.length ?? 0}/600
           </div>
         </GlassCard>
 
@@ -129,7 +128,7 @@ export function KnowledgeSafetySection({
             onClick={() =>
               onChange(
                 'guardrails',
-                config.guardrails +
+                (config.guardrails || '') +
                   (config.guardrails ? '\n' : '') +
                   'NUNCA invente preços ou tratamentos que não constam na base de conhecimento. Se não souber, transfira para um humano.',
               )
@@ -139,7 +138,7 @@ export function KnowledgeSafetySection({
           </AppButton>
         </div>
         <Textarea
-          value={config.guardrails}
+          value={config.guardrails || ''}
           onChange={(e) => onChange('guardrails', e.target.value)}
           maxLength={500}
           placeholder="Defina o que a IA está ESTRITAMENTE proibida de fazer..."
@@ -163,7 +162,7 @@ export function KnowledgeSafetySection({
             <div key={rule} className="flex items-center space-x-2">
               <Checkbox
                 id={`rule-${rule}`}
-                checked={config.human_handover_rules?.includes(rule)}
+                checked={(config.human_handover_rules || '').includes(rule)}
                 onCheckedChange={(checked) => addHandoverRule(rule, !!checked)}
               />
               <label
@@ -176,7 +175,7 @@ export function KnowledgeSafetySection({
           ))}
         </div>
         <Textarea
-          value={config.human_handover_rules}
+          value={config.human_handover_rules || ''}
           onChange={(e) => onChange('human_handover_rules', e.target.value)}
           maxLength={500}
           placeholder="Em quais situações a conversa deve ser transferida para um atendente?"

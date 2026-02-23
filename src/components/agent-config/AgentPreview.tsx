@@ -27,10 +27,10 @@ export function AgentPreview({ config, className }: AgentPreviewProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       let response = `Olá! Sou ${config.agent_name || 'a assistente'}. `
-      if (config.tone.toLowerCase().includes('emoji')) {
+      if ((config.tone || '').toLowerCase().includes('emoji')) {
         response += '✨ '
       }
-      if (config.company_info.toLowerCase().includes('preços')) {
+      if ((config.company_info || '').toLowerCase().includes('preços')) {
         response +=
           'Sobre valores, preciso fazer uma avaliação personalizada antes! '
       } else {

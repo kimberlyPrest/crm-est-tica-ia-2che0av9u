@@ -31,11 +31,11 @@ export function IdentitySection({ config, onChange }: IdentitySectionProps) {
             <div className="flex justify-between">
               <Label className="text-base">Nome do Agente</Label>
               <span className="text-xs text-gray-400">
-                {config.agent_name.length}/30
+                {config.agent_name?.length ?? 0}/30
               </span>
             </div>
             <Input
-              value={config.agent_name}
+              value={config.agent_name || ''}
               onChange={(e) => onChange('agent_name', e.target.value)}
               maxLength={30}
               placeholder="Ex: Sofia"
@@ -56,14 +56,14 @@ export function IdentitySection({ config, onChange }: IdentitySectionProps) {
               </AppButton>
             </div>
             <Textarea
-              value={config.role_definition}
+              value={config.role_definition || ''}
               onChange={(e) => onChange('role_definition', e.target.value)}
               maxLength={500}
               placeholder="Descreva quem é o agente e qual seu objetivo principal..."
               className="min-h-[100px]"
             />
             <div className="text-right text-xs text-gray-400">
-              {config.role_definition.length}/500
+              {config.role_definition?.length ?? 0}/500
             </div>
           </div>
         </GlassCard>
@@ -119,14 +119,14 @@ export function IdentitySection({ config, onChange }: IdentitySectionProps) {
           </div>
         </div>
         <Textarea
-          value={config.company_info}
+          value={config.company_info || ''}
           onChange={(e) => onChange('company_info', e.target.value)}
           maxLength={1000}
           placeholder="Insira dados essenciais: endereço, tabela de preços base, diferenciais, políticas de cancelamento..."
           className="min-h-[150px]"
         />
         <div className="text-right text-xs text-gray-400">
-          {config.company_info.length}/1000
+          {config.company_info?.length ?? 0}/1000
         </div>
       </GlassCard>
 
@@ -160,14 +160,14 @@ export function IdentitySection({ config, onChange }: IdentitySectionProps) {
           </div>
         </div>
         <Textarea
-          value={config.tone}
+          value={config.tone || ''}
           onChange={(e) => onChange('tone', e.target.value)}
           maxLength={400}
           placeholder="Como o agente deve se expressar? (Ex: Alegre, empático, usa emojis...)"
           className="min-h-[100px]"
         />
         <div className="text-right text-xs text-gray-400">
-          {config.tone.length}/400
+          {config.tone?.length ?? 0}/400
         </div>
       </GlassCard>
     </div>

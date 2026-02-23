@@ -119,8 +119,8 @@ export function FewShotSection({ config, onChange }: FewShotSectionProps) {
 
         {examples.map((example, index) => {
           const isValid =
-            example.question.trim().length > 0 &&
-            example.answer.trim().length > 0
+            (example.question?.trim()?.length ?? 0) > 0 &&
+            (example.answer?.trim()?.length ?? 0) > 0
 
           return (
             <GlassCard
@@ -150,7 +150,7 @@ export function FewShotSection({ config, onChange }: FewShotSectionProps) {
                     Usuário diz:
                   </Label>
                   <Input
-                    value={example.question}
+                    value={example.question || ''}
                     onChange={(e) =>
                       updateExample(example.id, 'question', e.target.value)
                     }
@@ -163,7 +163,7 @@ export function FewShotSection({ config, onChange }: FewShotSectionProps) {
                     Agente responde:
                   </Label>
                   <Textarea
-                    value={example.answer}
+                    value={example.answer || ''}
                     onChange={(e) =>
                       updateExample(example.id, 'answer', e.target.value)
                     }

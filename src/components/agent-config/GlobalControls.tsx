@@ -103,7 +103,7 @@ export function GlobalControls({
                   </Label>
                   <Input
                     type="time"
-                    value={config.auto_schedule_start_time}
+                    value={config.auto_schedule_start_time || '09:00'}
                     onChange={(e) =>
                       onChange('auto_schedule_start_time', e.target.value)
                     }
@@ -120,7 +120,7 @@ export function GlobalControls({
                   </Label>
                   <Input
                     type="time"
-                    value={config.auto_schedule_end_time}
+                    value={config.auto_schedule_end_time || '18:00'}
                     onChange={(e) =>
                       onChange('auto_schedule_end_time', e.target.value)
                     }
