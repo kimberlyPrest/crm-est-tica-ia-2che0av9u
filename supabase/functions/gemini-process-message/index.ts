@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
     if (historyError) throw historyError
 
     // Reverse history to chronological order
-    const formattedHistory = (history || []).reverse().map(msg => {
+    const formattedHistory = (history || []).reverse().map((msg) => {
       const role = msg.direction === 'inbound' ? 'user' : 'model'
       return { role, parts: [{ text: msg.content }] }
     })
@@ -54,10 +54,18 @@ Deno.serve(async (req) => {
         .eq('organization_id', organizationId)
     ])
 
-    const availableAudios = (audios || []).map(a => `- Áudio: "${a.name}" (Assuntos/Gatilhos: ${a.trigger_keywords?.join(', ') || 'N/A'})`).join('\n')
-    const availableFiles = (files || []).map(f => `- Documento/PDF: "${f.name}"`).join('\n')
+    const availableAudios = (audios || [])
+      .map(
+        (a) =>
+          `- Áudio: "${a.name}" (Assuntos/Gatilhos: ${a.trigger_keywords?.join(', ') || 'N/A'})`,
+      )
+      .join('\n')
+    const availableFiles = (files || [])
+      .map((f) => `- Documento/PDF: "${f.name}"`)
+      .join('\n')
 
-    let enhancedContext = config.prompt_context || `Você é o assistente ${config.name || 'IA'}.`
+    let enhancedContext =
+      config.prompt_context || `Você é o assistente ${config.name || 'IA'}.`
     if (availableAudios || availableFiles) {
       enhancedContext += `\n\n--- INFORMAÇÕES DE MÍDIA DISPONÍVEIS ---\nVocê possui acesso ao envio das seguintes mídias pré-gravadas/documentos. Sempre que for apropriado pelo contexto da conversa, utilize suas ferramentas (Functions) para enviar a mídia exata listada abaixo pelo nome exato.\n\nÁudios Prontos:\n${availableAudios || 'Nenhum'}\n\nDocumentos/PDFs:\n${availableFiles || 'Nenhum'}`
     }
@@ -67,70 +75,90 @@ Deno.serve(async (req) => {
       {
         functionDeclarations: [
           {
-            name: "atualizar_status_lead",
-            description: "Atualiza o estágio do CRM do lead atual baseado na intenção da conversa. Ex: 'Ser Humano', 'Qualificado'.",
+            name: 'atualizar_status_lead',
+            description:
+              "Atualiza o estágio do CRM do lead atual baseado na intenção da conversa. Ex: 'Ser Humano', 'Qualificado'.",
             parameters: {
-              type: "OBJECT",
+              type: 'OBJECT',
               properties: {
-                status_nome: { type: "STRING", description: "O nome do novo status a ser atualizado." }
+                status_nome: {
+                  type: 'STRING',
+                  description: 'O nome do novo status a ser atualizado.',
+                },
               },
-              required: ["status_nome"]
-            }
+              required: ['status_nome'],
+            },
           },
           {
-            name: "enviar_audio",
-            description: "Envia um arquivo de áudio pré-gravado da base de conhecimento.",
+            name: 'enviar_audio',
+            description:
+              'Envia um arquivo de áudio pré-gravado da base de conhecimento.',
             parameters: {
-              type: "OBJECT",
+              type: 'OBJECT',
               properties: {
-                nome_audio: { type: "STRING", description: "O nome exato do áudio listado no contexto para ser enviado." }
+                nome_audio: {
+                  type: 'STRING',
+                  description:
+                    'O nome exato do áudio listado no contexto para ser enviado.',
+                },
               },
-              required: ["nome_audio"]
-            }
+              required: ['nome_audio'],
+            },
           },
           {
-            name: "enviar_documento",
-            description: "Envia um arquivo/documento/PDF da base de conhecimento.",
+            name: 'enviar_documento',
+            description:
+              'Envia um arquivo/documento/PDF da base de conhecimento.',
             parameters: {
-              type: "OBJECT",
+              type: 'OBJECT',
               properties: {
-                nome_arquivo: { type: "STRING", description: "O nome exato do documento/PDF listado no contexto." }
+                nome_arquivo: {
+                  type: 'STRING',
+                  description:
+                    'O nome exato do documento/PDF listado no contexto.',
+                },
               },
-              required: ["nome_arquivo"]
-            }
+              required: ['nome_arquivo'],
+            },
           },
           {
-            name: "consultar_disponibilidade_agenda",
-            description: "Consulta os horários livres na agenda em uma data específica.",
+            name: 'consultar_disponibilidade_agenda',
+            description:
+              'Consulta os horários livres na agenda em uma data específica.',
             parameters: {
-              type: "OBJECT",
+              type: 'OBJECT',
               properties: {
-                data: { type: "STRING", description: "Data no formato YYYY-MM-DD" },
+                data: {
+                  type: 'STRING',
+                  description: 'Data no formato YYYY-MM-DD',
+                },
               },
-              required: ["data"]
-            }
+              required: ['data'],
+            },
           },
           {
-            name: "agendar_horario",
-            description: "Agenda um atendimento para o lead atual num horário disponível.",
+            name: 'agendar_horario',
+            description:
+              'Agenda um atendimento para o lead atual num horário disponível.',
             parameters: {
-              type: "OBJECT",
+              type: 'OBJECT',
               properties: {
-                data: { type: "STRING", description: "Data no formato YYYY-MM-DD" },
-                hora: { type: "STRING", description: "Hora no formato HH:mm" }
+                data: {
+                  type: 'STRING',
+                  description: 'Data no formato YYYY-MM-DD',
+                },
+                hora: { type: 'STRING', description: 'Hora no formato HH:mm' },
               },
-              required: ["data", "hora"]
-            }
-          }
-        ]
-      }
+              required: ['data', 'hora'],
+            },
+          },
+        ],
+      },
     ]
 
     // 5. Call Gemini API Function
     async function runGemini(contents: any[]) {
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`
-
-      // The systemInstruction is now built as enhancedContext
 
       const res = await fetch(geminiUrl, {
         method: 'POST',
@@ -139,8 +167,8 @@ Deno.serve(async (req) => {
           systemInstruction: { parts: { text: enhancedContext } },
           contents,
           tools: geminiTools,
-          generationConfig: { temperature: 0.7 }
-        })
+          generationConfig: { temperature: 0.7 },
+        }),
       })
 
       if (!res.ok) {
@@ -162,15 +190,26 @@ Deno.serve(async (req) => {
 
       if (functionCall.name === 'atualizar_status_lead') {
         const statusName = functionCall.args.status_nome
-        const { data: statusObj } = await supabase.from('status').select('id').ilike('name', `%${statusName}%`).maybeSingle()
+        const { data: statusObj } = await supabase
+          .from('status')
+          .select('id')
+          .ilike('name', `%${statusName}%`)
+          .maybeSingle()
         if (statusObj) {
-          await supabase.from('leads').update({ status_id: statusObj.id }).eq('id', leadId)
-          functionResponse = { success: true, message: `Status atualizado para ${statusName}` }
+          await supabase
+            .from('leads')
+            .update({ status_id: statusObj.id })
+            .eq('id', leadId)
+          functionResponse = {
+            success: true,
+            message: `Status atualizado para ${statusName}`,
+          }
         } else {
-          functionResponse = { error: `Status ${statusName} n\u00e3o encontrado no CRM.` }
+          functionResponse = {
+            error: `Status ${statusName} não encontrado no CRM.`,
+          }
         }
-      }
-      else if (functionCall.name === 'enviar_audio') {
+      } else if (functionCall.name === 'enviar_audio') {
         const audioName = functionCall.args.nome_audio
         const { data: audioRecord } = await supabase.from('knowledge_base_audios')
           .select('audio_path')
@@ -179,14 +218,24 @@ Deno.serve(async (req) => {
           .maybeSingle()
         if (audioRecord && audioRecord.audio_path) {
           await supabase.functions.invoke('evolution-send-message', {
-            body: { leadId, message: 'Audio', sentBy: 'ai', messageType: 'audio', mediaUrl: audioRecord.audio_path }
+            body: {
+              leadId,
+              message: 'Audio',
+              sentBy: 'ai',
+              messageType: 'audio',
+              mediaUrl: audioRecord.audio_path,
+            },
           })
-          functionResponse = { success: true, message: `Áudio ${audioName} enviado.` }
+          functionResponse = {
+            success: true,
+            message: `Áudio ${audioName} enviado.`,
+          }
         } else {
-          functionResponse = { error: `Áudio ${audioName} n\u00e3o encontrado na base.` }
+          functionResponse = {
+            error: `Áudio ${audioName} não encontrado na base.`,
+          }
         }
-      }
-      else if (functionCall.name === 'enviar_documento') {
+      } else if (functionCall.name === 'enviar_documento') {
         const fileName = functionCall.args.nome_arquivo
         const { data: fileRecord } = await supabase.from('knowledge_base_files')
           .select('file_path')
@@ -195,38 +244,52 @@ Deno.serve(async (req) => {
           .maybeSingle()
         if (fileRecord && fileRecord.file_path) {
           await supabase.functions.invoke('evolution-send-message', {
-            body: { leadId, message: 'Documento', sentBy: 'ai', messageType: 'document', mediaUrl: fileRecord.file_path }
+            body: {
+              leadId,
+              message: 'Documento',
+              sentBy: 'ai',
+              messageType: 'document',
+              mediaUrl: fileRecord.file_path,
+            },
           })
-          functionResponse = { success: true, message: `Documento ${fileName} enviado.` }
+          functionResponse = {
+            success: true,
+            message: `Documento ${fileName} enviado.`,
+          }
         } else {
-          functionResponse = { error: `Documento ${fileName} não encontrado na base.` }
+          functionResponse = {
+            error: `Documento ${fileName} não encontrado na base.`,
+          }
         }
-      }
-      else if (functionCall.name === 'consultar_disponibilidade_agenda') {
-        // Simplified check just acknowledging tool works. True scheduling relies on joining staff availability
-        functionResponse = { disponivel: "Verifique 09:00 ou 14:00 (simulado)" }
-      }
-      else if (functionCall.name === 'agendar_horario') {
-        // Create a simulated appointment insertion for completion sake
-        const startTime = new Date(`${functionCall.args.data}T${functionCall.args.hora}:00Z`)
+      } else if (functionCall.name === 'consultar_disponibilidade_agenda') {
+        functionResponse = { disponivel: 'Verifique 09:00 ou 14:00 (simulado)' }
+      } else if (functionCall.name === 'agendar_horario') {
+        const startTime = new Date(
+          `${functionCall.args.data}T${functionCall.args.hora}:00Z`,
+        )
         await supabase.from('appointments').insert({
           lead_id: leadId,
           scheduled_at: startTime.toISOString(),
-          status: 'scheduled'
+          status: 'scheduled',
         })
-        functionResponse = { success: true, message: `Agendado para ${functionCall.args.data} as ${functionCall.args.hora}` }
+        functionResponse = {
+          success: true,
+          message: `Agendado para ${functionCall.args.data} as ${functionCall.args.hora}`,
+        }
       }
 
       // Append Function Calling sequence to history and call Gemini again for the final response
       currentContents.push({ role: 'model', parts: [{ functionCall }] })
       currentContents.push({
         role: 'user',
-        parts: [{
-          functionResponse: {
-            name: functionCall.name,
-            response: { name: functionCall.name, content: functionResponse }
-          }
-        }]
+        parts: [
+          {
+            functionResponse: {
+              name: functionCall.name,
+              response: { name: functionCall.name, content: functionResponse },
+            },
+          },
+        ],
       })
 
       geminiData = await runGemini(currentContents)
@@ -238,17 +301,21 @@ Deno.serve(async (req) => {
 
     console.log(`[GeminiAgent] Final AI response generated for lead ${leadId}`)
 
-    // 5. Send final text response via Evolution API
-    const { error: invokeError } = await supabase.functions.invoke('evolution-send-message', {
-      body: {
-        leadId,
-        message: aiResponse,
-        sentBy: 'ai',
-        messageType: 'text'
-      }
-    })
+    // 6. Send final text response via Evolution API
+    const { error: invokeError } = await supabase.functions.invoke(
+      'evolution-send-message',
+      {
+        body: {
+          leadId,
+          message: aiResponse,
+          sentBy: 'ai',
+          messageType: 'text',
+        },
+      },
+    )
 
-    if (invokeError) throw new Error(`Error invoking send-message: ${invokeError.message}`)
+    if (invokeError)
+      throw new Error(`Error invoking send-message: ${invokeError.message}`)
 
     return new Response(
       JSON.stringify({ success: true, status: 'processed' }),
