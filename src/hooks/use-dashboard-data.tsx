@@ -94,18 +94,21 @@ export function useDashboardData() {
       // 1. Leads
       const { count: totalLeads } = await supabase
         .from('leads')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact' })
+        .limit(0)
 
       const { count: leadsCurrentMonth } = await supabase
         .from('leads')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact' })
         .gte('created_at', startOfCurrentMonth)
+        .limit(0)
 
       const { count: leadsPrevMonth } = await supabase
         .from('leads')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact' })
         .gte('created_at', startOfPreviousMonth)
         .lt('created_at', startOfCurrentMonth)
+        .limit(0)
 
       const leadsChange =
         leadsPrevMonth && leadsPrevMonth > 0
@@ -125,23 +128,27 @@ export function useDashboardData() {
         ) || 0
 
       // 3. Appointments
+      // Avoid head: true which causes JSON parse errors on empty responses in some environments
       const { count: totalAppointments } = await supabase
         .from('appointments')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact' })
         .in('status', ['pending', 'confirmed'])
+        .limit(0)
 
       const { count: appointmentsCurrentWeek } = await supabase
         .from('appointments')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact' })
         .in('status', ['pending', 'confirmed'])
         .gte('created_at', startOfCurrentWeek)
+        .limit(0)
 
       const { count: appointmentsPrevWeek } = await supabase
         .from('appointments')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact' })
         .in('status', ['pending', 'confirmed'])
         .gte('created_at', startOfPreviousWeek)
         .lt('created_at', startOfCurrentWeek)
+        .limit(0)
 
       const appointmentsChange =
         appointmentsPrevWeek && appointmentsPrevWeek > 0
@@ -160,8 +167,9 @@ export function useDashboardData() {
       if (statusData) {
         const { count } = await supabase
           .from('leads')
-          .select('*', { count: 'exact', head: true })
+          .select('id', { count: 'exact' })
           .eq('status_id', statusData.id)
+          .limit(0)
         closedSalesCount = count || 0
       }
 
@@ -254,9 +262,10 @@ export function useDashboardData() {
         relevantStatuses.map(async (status) => {
           const { count } = await supabase
             .from('leads')
-            .select('*', { count: 'exact', head: true })
+            .select('id', { count: 'exact' })
             .eq('status_id', status.id)
             .gte('created_at', startDate.toISOString())
+            .limit(0)
 
           let color = '#DDD6FE'
           if (status.name === 'Novo') color = '#DDD6FE'
