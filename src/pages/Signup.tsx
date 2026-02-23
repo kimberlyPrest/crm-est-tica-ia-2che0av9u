@@ -6,13 +6,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertCircle, UserPlus } from 'lucide-react'
 import { toast } from 'sonner'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Signup = () => {
   const { signUp } = useAuth()
+  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [organizationName, setOrganizationName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -28,13 +30,20 @@ const Signup = () => {
     }
 
     try {
-      const { error } = await signUp(email, password, name)
-      if (error) {
-        console.error(error)
-        setError('Falha ao criar conta')
+      const { error: signUpError } = await signUp(
+        email,
+        password,
+        name,
+        organizationName,
+      )
+
+      if (signUpError) {
+        console.error(signUpError)
+        setError('Falha ao criar conta. Verifique os dados e tente novamente.')
         toast.error('Ocorreu um erro ao criar a conta')
       } else {
-        toast.success('Conta criada com sucesso! Verifique seu email.')
+        toast.success('Conta criada com sucesso!')
+        navigate('/dashboard')
       }
     } catch (err) {
       setError('Ocorreu um erro inesperado')
@@ -70,6 +79,24 @@ const Signup = () => {
               onChange={(e) => setName(e.target.value)}
               className="rounded-full bg-white/60 border-gray-200 focus:ring-2 focus:ring-brand-lime focus:border-transparent h-10 transition-all"
               required
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label
+              htmlFor="organization"
+              className="text-sm font-semibold text-gray-700"
+            >
+              Organização / Clínica (Opcional)
+            </Label>
+            <Input
+              id="organization"
+              type="text"
+              placeholder="Nome da sua clínica"
+              value={organizationName}
+              onChange={(e) => setOrganizationName(e.target.value)}
+              className="rounded-full bg-white/60 border-gray-200 focus:ring-2 focus:ring-brand-lime focus:border-transparent h-10 transition-all"
               disabled={isLoading}
             />
           </div>
