@@ -12,8 +12,11 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { leadId, messageContent, messageId, agentConfigId, organizationId } = await req.json()
-    console.log(`[GeminiAgent] Processing message ${messageId} for lead ${leadId} in org ${organizationId}`)
+    const { leadId, messageContent, messageId, agentConfigId, organizationId } =
+      await req.json()
+    console.log(
+      `[GeminiAgent] Processing message ${messageId} for lead ${leadId} in org ${organizationId}`,
+    )
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
@@ -44,14 +47,16 @@ Deno.serve(async (req) => {
 
     // 3. Fetch Knowledge Base Resources (Active Only & Scoped to Org)
     const [{ data: audios }, { data: files }] = await Promise.all([
-      supabase.from('knowledge_base_audios')
+      supabase
+        .from('knowledge_base_audios')
         .select('name, trigger_keywords')
         .eq('is_active', true)
         .eq('organization_id', organizationId),
-      supabase.from('knowledge_base_files')
+      supabase
+        .from('knowledge_base_files')
         .select('name')
         .eq('is_active', true)
-        .eq('organization_id', organizationId)
+        .eq('organization_id', organizationId),
     ])
 
     const availableAudios = (audios || [])
@@ -211,7 +216,8 @@ Deno.serve(async (req) => {
         }
       } else if (functionCall.name === 'enviar_audio') {
         const audioName = functionCall.args.nome_audio
-        const { data: audioRecord } = await supabase.from('knowledge_base_audios')
+        const { data: audioRecord } = await supabase
+          .from('knowledge_base_audios')
           .select('audio_path')
           .ilike('name', `%${audioName}%`)
           .eq('organization_id', organizationId)
@@ -237,7 +243,8 @@ Deno.serve(async (req) => {
         }
       } else if (functionCall.name === 'enviar_documento') {
         const fileName = functionCall.args.nome_arquivo
-        const { data: fileRecord } = await supabase.from('knowledge_base_files')
+        const { data: fileRecord } = await supabase
+          .from('knowledge_base_files')
           .select('file_path')
           .ilike('name', `%${fileName}%`)
           .eq('organization_id', organizationId)

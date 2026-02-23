@@ -108,8 +108,14 @@ export function useAppointmentActions(onSuccess?: () => void) {
       }
 
       // Get user organization
-      const { data: { user } } = await supabase.auth.getUser()
-      const { data: userData } = await supabase.from('users').select('organization_id').eq('id', user?.id).single()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      const { data: userData } = await supabase
+        .from('users')
+        .select('organization_id')
+        .eq('id', user?.id)
+        .single()
       const organizationId = userData?.organization_id
 
       // 4. Create Activity

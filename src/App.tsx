@@ -66,10 +66,7 @@ const App = () => (
               path="/base-conhecimento/agente-ia"
               element={<AgentConfigPage />}
             />
-            <Route
-              path="/base-conhecimento/arquivos"
-              element={<FilesPage />}
-            />
+            <Route path="/base-conhecimento/arquivos" element={<FilesPage />} />
             <Route path="/configuracoes" element={<Settings />} />
           </Route>
 

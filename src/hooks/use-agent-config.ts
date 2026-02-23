@@ -96,7 +96,10 @@ export function useAgentConfig() {
         ])
 
         // Get current user and organization_id
-        const { data: { user }, error: userError } = await supabase.auth.getUser()
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser()
         if (userError) throw userError
 
         const { data: userData, error: orgError } = await supabase
@@ -131,7 +134,7 @@ export function useAgentConfig() {
             .insert({
               agent_name: defaultConfig.agent_name,
               is_enabled: false,
-              organization_id: orgId
+              organization_id: orgId,
             })
             .select()
             .single()

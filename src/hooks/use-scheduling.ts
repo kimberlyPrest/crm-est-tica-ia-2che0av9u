@@ -274,8 +274,14 @@ export function useScheduling(
     setSubmitting(true)
     try {
       // 1. Get current user and organization
-      const { data: { user } } = await supabase.auth.getUser()
-      const { data: userData } = await supabase.from('users').select('organization_id').eq('id', user?.id).single()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      const { data: userData } = await supabase
+        .from('users')
+        .select('organization_id')
+        .eq('id', user?.id)
+        .single()
       const organizationId = userData?.organization_id
 
       if (!organizationId) {

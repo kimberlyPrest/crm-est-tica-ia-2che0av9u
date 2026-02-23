@@ -356,7 +356,9 @@ async function orchestrateAI(
   }
 
   // Trigger AI
-  console.log(`[Webhook] Triggering AI for lead ${leadId} in org ${organizationId}`)
+  console.log(
+    `[Webhook] Triggering AI for lead ${leadId} in org ${organizationId}`,
+  )
   await supabase.functions.invoke('gemini-process-message', {
     body: {
       leadId,
