@@ -1,3 +1,10 @@
+-- Drop the existing unique constraint/index on phone in auth.users to allow multiple empty strings
+ALTER TABLE auth.users DROP CONSTRAINT IF EXISTS users_phone_key;
+DROP INDEX IF EXISTS auth.users_phone_key;
+
+-- Recreate the unique index ignoring empty strings
+CREATE UNIQUE INDEX IF NOT EXISTS users_phone_key ON auth.users (phone) WHERE phone IS NOT NULL AND phone <> '';
+
 -- Fix existing auth.users nulls to ensure GoTrue compatibility and prevent 500 errors
 UPDATE auth.users
 SET
@@ -36,13 +43,13 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Drop existing global unique constraints that prevent multi-tenancy defaults
 ALTER TABLE public.status DROP CONSTRAINT IF EXISTS status_name_key;
-DROP INDEX IF EXISTS status_name_key;
+DROP INDEX IF EXISTS public.status_name_key;
 
 ALTER TABLE public.products DROP CONSTRAINT IF EXISTS products_name_key;
-DROP INDEX IF EXISTS products_name_key;
+DROP INDEX IF EXISTS public.products_name_key;
 
 ALTER TABLE public.cadence_templates DROP CONSTRAINT IF EXISTS cadence_templates_name_key;
-DROP INDEX IF EXISTS cadence_templates_name_key;
+DROP INDEX IF EXISTS public.cadence_templates_name_key;
 
 -- Add correct composite unique constraints per organization
 ALTER TABLE public.status DROP CONSTRAINT IF EXISTS status_name_organization_id_key;
