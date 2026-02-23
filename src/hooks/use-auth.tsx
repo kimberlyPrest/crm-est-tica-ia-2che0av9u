@@ -108,15 +108,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .select('organization_id')
           .eq('id', currentSession.user.id)
           .single()
-          .then(({ data }) => {
-            if (data && mounted) setOrganizationId(data.organization_id)
-            if (mounted) setLoading(false)
-          })
-          .catch((err) => {
-            console.error('Background org fetch error:', err)
-            if (mounted) setLoading(false)
-          })
-      } else if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+          .then(
+            ({ data }) => {
+              if (data && mounted) setOrganizationId(data.organization_id)
+              if (mounted) setLoading(false)
+            },
+            (err) => {
+              console.error('Background org fetch error:', err)
+              if (mounted) setLoading(false)
+            },
+          )
+      } else if (event === 'SIGNED_OUT') {
         setSession(null)
         setUser(null)
         setOrganizationId(null)
@@ -146,7 +148,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           name,
           organization_name: organizationName || undefined,
         },
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}/login`,
       },
     })
     return { error }
