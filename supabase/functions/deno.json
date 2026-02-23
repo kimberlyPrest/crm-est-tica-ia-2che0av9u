@@ -1,9 +1,9 @@
 {
   "_versions": {
-    "evolution-create-instance": 8,
+    "evolution-create-instance": 9,
     "evolution-webhook-handler": 2,
-    "gemini-process-message": 1,
-    "evolution-send-message": 1,
+    "gemini-process-message": 4,
+    "evolution-send-message": 3,
     "evolution-check-status": 1,
     "evolution-disconnect": 1,
     "create-user": 2
