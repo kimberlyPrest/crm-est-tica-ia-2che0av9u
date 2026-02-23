@@ -12,6 +12,7 @@ import {
   AlertCircle,
   Link as LinkIcon,
   MessageSquare,
+  QrCode,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -45,7 +46,7 @@ export function WhatsAppSettings() {
       setInstances(data || [])
     } catch (error) {
       console.error('Error fetching instances:', error)
-      toast.error('Erro ao carregar instâncias do WhatsApp')
+      toast.error('Erro ao carregar instância do WhatsApp')
     } finally {
       setLoading(false)
     }
@@ -111,11 +112,18 @@ export function WhatsAppSettings() {
       )
       if (error) throw error
 
-      toast.success('Instância desconectada com sucesso')
+      const { error: dbError } = await supabase
+        .from('whatsapp_instances')
+        .delete()
+        .eq('id', instanceId)
+
+      if (dbError) throw dbError
+
+      toast.success('Instância removida com sucesso')
       await fetchInstances()
     } catch (error) {
       console.error('Error disconnecting:', error)
-      toast.error('Erro ao desconectar instância')
+      toast.error('Erro ao remover instância')
     } finally {
       setActionLoading(null)
     }
@@ -154,27 +162,27 @@ export function WhatsAppSettings() {
     switch (status) {
       case 'connected':
         return (
-          <Badge className="bg-green-100 text-green-700 border-green-200">
+          <Badge className="bg-green-100 text-green-700 border-green-200 hover:bg-green-100">
             Conectado
           </Badge>
         )
       case 'qr_received':
         return (
-          <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200">
-            Aguardando QR
+          <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200 hover:bg-yellow-100">
+            Aguardando Leitura de QR Code
           </Badge>
         )
       case 'connecting':
         return (
-          <Badge className="bg-blue-100 text-blue-700 border-blue-200">
-            Conectando
+          <Badge className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100">
+            Conectando...
           </Badge>
         )
+      case 'disconnected':
       case 'failed':
-        return <Badge variant="destructive">Falha</Badge>
       default:
         return (
-          <Badge variant="secondary" className="bg-gray-100 text-gray-600">
+          <Badge className="bg-red-100 text-red-700 border-red-200 hover:bg-red-100">
             Desconectado
           </Badge>
         )
@@ -216,7 +224,7 @@ export function WhatsAppSettings() {
             className="whitespace-nowrap bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-lg"
           >
             <LinkIcon className="h-4 w-4 mr-2" />
-            Conectar WhatsApp
+            Conectar novo número
           </AppButton>
         )}
       </div>
@@ -241,38 +249,39 @@ export function WhatsAppSettings() {
             className="mt-4 bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-md"
           >
             <LinkIcon className="h-4 w-4 mr-2" />
-            Conectar Agora
+            Conectar novo número
           </AppButton>
         </GlassCard>
       ) : (
         <div className="grid grid-cols-1 gap-6">
-          {instances.map((instance) => (
+          {instances.slice(0, 1).map((instance) => (
             <GlassCard
               key={instance.id}
               className="flex flex-col md:flex-row gap-6 bg-white/60"
             >
               <div className="flex-1 space-y-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="font-bold text-lg text-gray-800">
-                        {instance.profile_name || instance.instance_name}
-                      </h3>
-                      {getStatusBadge(instance.connection_status)}
-                    </div>
-                    {instance.phone_number ? (
-                      <p className="text-gray-500 font-medium font-mono">
-                        {instance.phone_number}
-                      </p>
-                    ) : (
-                      <p className="text-gray-400 text-sm">
-                        Número não identificado
-                      </p>
-                    )}
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="font-bold text-xl text-gray-800">
+                      {instance.profile_name || instance.instance_name}
+                    </h3>
+                    {getStatusBadge(instance.connection_status)}
                   </div>
+                  {instance.phone_number ? (
+                    <p className="text-gray-500 font-medium font-mono text-lg">
+                      {instance.phone_number}
+                    </p>
+                  ) : (
+                    <p className="text-gray-400 text-sm">
+                      Número não identificado
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-400 font-mono mt-1">
+                    ID da Instância: {instance.instance_name}
+                  </p>
                 </div>
 
-                <div className="flex flex-wrap gap-2 pt-2">
+                <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
                   <AppButton
                     variant="outline"
                     size="sm"
@@ -291,13 +300,13 @@ export function WhatsAppSettings() {
                           : '',
                       )}
                     />
-                    Atualizar Status
+                    Atualizar status / QR Code
                   </AppButton>
 
                   <AppButton
                     variant="ghost"
                     size="sm"
-                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                    className="text-red-500 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-100"
                     onClick={() => handleDisconnect(instance.id)}
                     loading={actionLoading === `disconnect-${instance.id}`}
                     disabled={
@@ -306,25 +315,28 @@ export function WhatsAppSettings() {
                     }
                   >
                     <Unplug className="h-4 w-4 mr-2" />
-                    Desconectar
+                    Remover Instância
                   </AppButton>
                 </div>
               </div>
 
               {instance.connection_status === 'qr_received' &&
                 instance.qr_code && (
-                  <div className="md:w-64 bg-white rounded-xl p-4 flex flex-col items-center justify-center border border-gray-100 shadow-sm">
-                    <p className="text-sm font-semibold text-gray-700 mb-3 text-center">
+                  <div className="md:w-72 bg-white rounded-2xl p-6 flex flex-col items-center justify-center border border-gray-100 shadow-sm">
+                    <div className="flex items-center justify-center h-10 w-10 bg-yellow-50 rounded-full text-yellow-600 mb-3">
+                      <QrCode className="h-5 w-5" />
+                    </div>
+                    <p className="text-sm font-semibold text-gray-800 mb-4 text-center">
                       Escaneie o QR Code
                     </p>
-                    <div className="bg-white p-2 rounded-lg border border-gray-100">
+                    <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
                       <img
                         src={instance.qr_code}
                         alt="WhatsApp QR Code"
-                        className="w-40 h-40 object-contain"
+                        className="w-48 h-48 object-contain"
                       />
                     </div>
-                    <p className="text-xs text-gray-500 mt-3 text-center">
+                    <p className="text-xs text-gray-500 mt-4 text-center leading-relaxed">
                       Abra o WhatsApp no seu celular, vá em Aparelhos Conectados
                       e escaneie.
                     </p>
@@ -332,29 +344,31 @@ export function WhatsAppSettings() {
                 )}
 
               {instance.connection_status === 'connected' && (
-                <div className="md:w-64 bg-[#25D366]/5 rounded-xl p-4 flex flex-col items-center justify-center border border-[#25D366]/20">
-                  <div className="h-16 w-16 bg-[#25D366]/20 rounded-full flex items-center justify-center text-[#25D366] mb-3 shadow-inner">
-                    <MessageSquare className="h-8 w-8" />
+                <div className="md:w-72 bg-[#25D366]/5 rounded-2xl p-6 flex flex-col items-center justify-center border border-[#25D366]/20">
+                  <div className="h-20 w-20 bg-[#25D366]/20 rounded-full flex items-center justify-center text-[#25D366] mb-4 shadow-inner">
+                    <MessageSquare className="h-10 w-10" />
                   </div>
-                  <p className="text-sm font-bold text-gray-800 text-center">
+                  <p className="text-base font-bold text-gray-800 text-center">
                     WhatsApp Ativo
                   </p>
-                  <p className="text-xs text-gray-500 mt-1 text-center font-medium">
+                  <p className="text-sm text-gray-500 mt-2 text-center font-medium">
                     Pronto para enviar e receber mensagens
                   </p>
                 </div>
               )}
 
-              {instance.connection_status === 'failed' && (
-                <div className="md:w-64 bg-red-50 rounded-xl p-4 flex flex-col items-center justify-center border border-red-100">
-                  <div className="h-12 w-12 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-3 shadow-inner">
-                    <AlertCircle className="h-6 w-6" />
+              {(instance.connection_status === 'disconnected' ||
+                instance.connection_status === 'failed') && (
+                <div className="md:w-72 bg-red-50/50 rounded-2xl p-6 flex flex-col items-center justify-center border border-red-100">
+                  <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-4 shadow-inner">
+                    <AlertCircle className="h-8 w-8" />
                   </div>
-                  <p className="text-sm font-bold text-red-800 text-center">
+                  <p className="text-base font-bold text-red-800 text-center">
                     Falha na Conexão
                   </p>
-                  <p className="text-xs text-red-600/80 mt-1 text-center">
-                    Tente desconectar e conectar novamente.
+                  <p className="text-sm text-red-600/80 mt-2 text-center">
+                    Tente atualizar o status ou remover a instância e criar
+                    novamente.
                   </p>
                 </div>
               )}

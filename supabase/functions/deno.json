@@ -1,6 +1,6 @@
 {
   "_versions": {
-    "evolution-create-instance": 11,
+    "evolution-create-instance": 12,
     "evolution-webhook-handler": 2,
     "gemini-process-message": 4,
     "evolution-send-message": 3,
