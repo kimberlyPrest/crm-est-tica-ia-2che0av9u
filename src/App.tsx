@@ -17,6 +17,7 @@ import AgentConfigPage from './pages/knowledge-base/AgentConfig'
 import FilesPage from './pages/knowledge-base/Files'
 import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
+import LandingPage from './pages/LandingPage'
 import MainLayout from './components/layout/MainLayout'
 
 const App = () => (
@@ -50,14 +51,7 @@ const App = () => (
               </AuthGuard>
             }
           />
-          <Route
-            path="/"
-            element={
-              <AuthGuard>
-                <Navigate to="/dashboard" replace />
-              </AuthGuard>
-            }
-          />
+          <Route path="/" element={<LandingPage />} />
 
           <Route
             element={

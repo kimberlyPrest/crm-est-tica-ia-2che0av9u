@@ -1,35 +1,38 @@
 import { GlassCard } from '@/components/GlassCard'
 import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
+import { Search, Plus } from 'lucide-react'
+import { AppButton } from '@/components/AppButton'
 import { cn } from '@/lib/utils'
 import { CRMFilter } from '@/hooks/use-crm-data'
 import { useEffect, useState } from 'react'
 
 interface CRMFilterBarProps {
   filter: CRMFilter
-  setFilter: (filter: CRMFilter) => void
+  onFilterChange: (filter: CRMFilter) => void
   searchQuery: string
-  setSearchQuery: (query: string) => void
+  onSearchChange: (query: string) => void
+  onNewLead?: () => void
 }
 
 export function CRMFilterBar({
   filter,
-  setFilter,
+  onFilterChange,
   searchQuery,
-  setSearchQuery,
+  onSearchChange,
+  onNewLead,
 }: CRMFilterBarProps) {
   const [localSearch, setLocalSearch] = useState(searchQuery)
 
   // Debounce search
   useEffect(() => {
     const handler = setTimeout(() => {
-      setSearchQuery(localSearch)
+      onSearchChange(localSearch)
     }, 300)
 
     return () => {
       clearTimeout(handler)
     }
-  }, [localSearch, setSearchQuery])
+  }, [localSearch, onSearchChange])
 
   const filters: { id: CRMFilter; label: string }[] = [
     { id: 'all', label: 'Todos' },
@@ -48,7 +51,7 @@ export function CRMFilterBar({
         {filters.map((f) => (
           <button
             key={f.id}
-            onClick={() => setFilter(f.id)}
+            onClick={() => onFilterChange(f.id)}
             className={cn(
               'px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300',
               filter === f.id
@@ -61,15 +64,26 @@ export function CRMFilterBar({
         ))}
       </div>
 
-      {/* Search */}
-      <div className="relative w-full md:w-[300px]">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-        <Input
-          placeholder="Buscar por nome ou telefone..."
-          value={localSearch}
-          onChange={(e) => setLocalSearch(e.target.value)}
-          className="pl-9 rounded-full bg-white/50 border-white/30 focus:bg-white/80 transition-all h-10"
-        />
+      {/* Search & New Lead */}
+      <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="relative flex-1 md:w-[300px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+          <Input
+            placeholder="Buscar por nome ou telefone..."
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            className="pl-9 rounded-full bg-white/50 border-white/30 focus:bg-white/80 transition-all h-10"
+          />
+        </div>
+        <AppButton
+          variant="pill"
+          size="sm"
+          onClick={onNewLead}
+          className="shrink-0"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          <span className="hidden sm:inline">Novo Lead</span>
+        </AppButton>
       </div>
     </GlassCard>
   )

@@ -50,8 +50,8 @@ export function WeekView({
             <div
               key={day.toISOString()}
               className={cn(
-                'py-3 text-center border-r border-gray-100 last:border-r-0',
-                isToday(day) && 'bg-brand-lime/10',
+                'py-3 text-center border-r border-gray-100 last:border-r-0 transition-colors',
+                isToday(day) && 'bg-brand-lime/5',
               )}
             >
               <div className="text-xs font-semibold text-gray-500 uppercase">
@@ -59,9 +59,9 @@ export function WeekView({
               </div>
               <div
                 className={cn(
-                  'text-lg font-bold mx-auto w-8 h-8 flex items-center justify-center rounded-full mt-1',
+                  'text-lg font-bold mx-auto w-9 h-9 flex items-center justify-center rounded-full mt-1 transition-all',
                   isToday(day)
-                    ? 'bg-brand-lime text-brand-slate'
+                    ? 'bg-brand-lime text-brand-slate shadow-[0_4px_12px_rgba(132,204,22,0.4)] scale-105 ring-2 ring-white'
                     : 'text-brand-slate',
                 )}
               >

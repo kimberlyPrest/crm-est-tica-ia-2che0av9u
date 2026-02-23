@@ -32,9 +32,6 @@ export default function AgentConfigPage() {
   return (
     <div className="pb-24 animate-fade-in relative">
       <div className="flex flex-col gap-2 mb-8">
-        <h1 className="text-3xl font-bold text-brand-slate">
-          Configuração do Agente IA
-        </h1>
         <p className="text-gray-500">
           Personalize o comportamento, conhecimento e segurança do seu
           assistente virtual.

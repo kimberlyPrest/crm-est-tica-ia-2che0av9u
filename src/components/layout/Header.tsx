@@ -9,6 +9,11 @@ export function Header() {
   const location = useLocation()
 
   const getPageTitle = (pathname: string) => {
+    if (pathname.startsWith('/base-conhecimento/agente-ia'))
+      return 'Base de Conhecimento > Agente IA'
+    if (pathname.startsWith('/base-conhecimento/arquivos'))
+      return 'Base de Conhecimento > Arquivos'
+
     switch (pathname) {
       case '/dashboard':
         return 'Dashboard'
@@ -23,7 +28,7 @@ export function Header() {
       case '/configuracoes':
         return 'Configurações'
       default:
-        return 'CRM Estética'
+        return 'ClinicAI'
     }
   }
 

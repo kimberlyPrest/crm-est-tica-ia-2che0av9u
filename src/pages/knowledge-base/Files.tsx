@@ -112,9 +112,6 @@ export default function FilesPage() {
     <div className="space-y-6 animate-fade-in relative">
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold text-brand-slate">
-            Arquivos e Áudios
-          </h1>
           <p className="text-gray-500">
             Gerencie os documentos e áudios que a IA pode enviar aos clientes.
           </p>
@@ -237,10 +234,10 @@ export default function FilesPage() {
                         ))}
                         {(!audio.trigger_keywords ||
                           audio.trigger_keywords.length === 0) && (
-                          <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full border border-gray-200">
-                            Sem gatilhos
-                          </span>
-                        )}
+                            <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full border border-gray-200">
+                              Sem gatilhos
+                            </span>
+                          )}
                       </div>
                     </div>
                   </div>

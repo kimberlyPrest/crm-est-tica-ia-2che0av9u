@@ -53,7 +53,9 @@ const Login = () => {
           <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-brand-lime/20 text-brand-lime mb-2">
             <LogIn className="h-6 w-6" />
           </div>
-          <h1 className="text-2xl font-bold text-brand-slate">CRM Estética</h1>
+          <h1 className="text-2xl font-bold text-brand-slate">
+            Clinic<span className="text-brand-lime">AI</span>
+          </h1>
           <p className="text-sm text-gray-500">Faça login para continuar</p>
         </div>
 

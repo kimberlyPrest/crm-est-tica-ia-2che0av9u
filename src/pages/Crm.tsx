@@ -3,8 +3,10 @@ import { CRMFilterBar } from '@/components/crm/CRMFilterBar'
 import { CRMKanbanBoard } from '@/components/crm/CRMKanbanBoard'
 import { LeadDetailsDrawer } from '@/components/crm/LeadDetailsDrawer'
 import { SchedulingModal } from '@/components/crm/SchedulingModal'
+import { NewLeadModal } from '@/components/crm/NewLeadModal'
 import { useCrmData, CRMLead } from '@/hooks/use-crm-data'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Plus } from 'lucide-react'
+import { AppButton } from '@/components/AppButton'
 
 export default function Crm() {
   const {
@@ -21,6 +23,7 @@ export default function Crm() {
 
   const [selectedLead, setSelectedLead] = useState<CRMLead | null>(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
+  const [newLeadOpen, setNewLeadOpen] = useState(false)
 
   const [schedulingOpen, setSchedulingOpen] = useState(false)
   const [schedulingLead, setSchedulingLead] = useState<CRMLead | null>(null)
@@ -71,6 +74,7 @@ export default function Crm() {
           onFilterChange={setFilter}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          onNewLead={() => setNewLeadOpen(true)}
         />
       </div>
 
@@ -107,6 +111,25 @@ export default function Crm() {
           }
         }}
       />
+      {/* New Lead Modal */}
+      <NewLeadModal
+        open={newLeadOpen}
+        onOpenChange={setNewLeadOpen}
+        statuses={statuses}
+        onSuccess={refresh}
+      />
+
+      {/* Floating Action Button - Mobile focus */}
+      <div className="fixed bottom-8 right-8 z-40 md:hidden">
+        <AppButton
+          variant="pill"
+          size="lg"
+          className="h-16 w-16 rounded-full shadow-2xl bg-brand-lime text-brand-slate hover:scale-110 active:scale-95 transition-all"
+          onClick={() => setNewLeadOpen(true)}
+        >
+          <Plus className="h-8 w-8" />
+        </AppButton>
+      </div>
     </div>
   )
 }

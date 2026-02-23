@@ -28,9 +28,6 @@ export default function KnowledgeBase() {
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold text-brand-slate">
-          Base de Conhecimento
-        </h1>
         <p className="text-gray-500">
           Centralize as informações do seu negócio para potencializar a IA.
         </p>

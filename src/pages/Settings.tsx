@@ -8,7 +8,6 @@ export default function Settings() {
   return (
     <div className="space-y-8 animate-fade-in pb-10">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold text-brand-slate">Configurações</h1>
         <p className="text-gray-500">
           Gerencie sua organização, equipe e integrações do sistema.
         </p>

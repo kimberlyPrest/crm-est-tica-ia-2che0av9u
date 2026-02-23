@@ -6,6 +6,7 @@ interface GlassCardProps {
   className?: string
   hoverEffect?: boolean
   size?: 'md' | 'lg'
+  onClick?: () => void
 }
 
 export function GlassCard({
@@ -13,9 +14,11 @@ export function GlassCard({
   className,
   hoverEffect = false,
   size = 'lg',
+  onClick,
 }: GlassCardProps) {
   return (
     <div
+      onClick={onClick}
       className={cn(
         'glass',
         size === 'lg' ? 'rounded-[2rem] p-8' : 'rounded-[1.75rem] p-6',

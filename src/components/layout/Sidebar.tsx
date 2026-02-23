@@ -37,7 +37,9 @@ export function Sidebar() {
   const NavContent = () => (
     <div className="flex flex-col h-full">
       <div className="pt-8 pb-8 px-6">
-        <h2 className="text-xl font-bold text-brand-slate">CRM Estética</h2>
+        <h2 className="text-xl font-bold text-brand-slate">
+          Clinic<span className="text-brand-lime">AI</span>
+        </h2>
       </div>
       <nav className="flex-1 px-4 space-y-2">
         {menuItems.map((item) => {

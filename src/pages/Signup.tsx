@@ -54,7 +54,7 @@ const Signup = () => {
             <UserPlus className="h-6 w-6" />
           </div>
           <h1 className="text-2xl font-bold text-brand-slate">Criar Conta</h1>
-          <p className="text-sm text-gray-500">Cadastre-se no CRM Estética</p>
+          <p className="text-sm text-gray-500">Cadastre-se no ClinicAI</p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

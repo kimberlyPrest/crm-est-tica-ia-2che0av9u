@@ -68,9 +68,9 @@ export function MonthView({ date, appointments, onDayClick }: MonthViewProps) {
               <div className="flex justify-between items-start">
                 <span
                   className={cn(
-                    'text-sm font-medium h-7 w-7 flex items-center justify-center rounded-full',
+                    'text-sm font-medium h-8 w-8 flex items-center justify-center rounded-full transition-all',
                     isToday(day)
-                      ? 'bg-brand-lime text-brand-slate shadow-sm'
+                      ? 'bg-brand-lime text-brand-slate font-bold shadow-[0_4px_12px_rgba(132,204,22,0.4)] scale-110 ring-2 ring-white'
                       : isCurrentMonth
                         ? 'text-gray-700'
                         : 'text-gray-400',

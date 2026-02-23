@@ -26,10 +26,7 @@ export default {
       },
     },
     extend: {
-      fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-        display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-      },
+
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -103,6 +100,24 @@ export default {
       boxShadow: {
         glass: '0 4px 24px rgba(0, 0, 0, 0.06)',
         'glass-hover': '0 8px 32px rgba(0, 0, 0, 0.12)',
+      },
+      keyframes: {
+        ticker: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
+        },
+        scroll: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        ticker: 'ticker 90s linear infinite',
+        scroll: 'scroll 120s linear infinite',
+      },
+      fontFamily: {
+        sans: ['"DM Sans"', 'Inter', 'sans-serif'],
+        display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
       },
     },
   },

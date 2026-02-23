@@ -77,7 +77,6 @@ export default function Clientes() {
       <div className="flex flex-col gap-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-brand-slate">Clientes</h1>
             <p className="text-gray-500 mt-1">
               Gerencie seus clientes e acompanhe o progresso dos tratamentos
             </p>

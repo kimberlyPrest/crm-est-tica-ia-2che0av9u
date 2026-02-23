@@ -12,7 +12,7 @@ const VerifyEmail = () => {
               🩺
             </span>
             <span className="text-sm font-bold text-gray-800 tracking-tight">
-              CRM Estética
+              ClinicAI
             </span>
           </div>
         </div>
@@ -31,7 +31,7 @@ const VerifyEmail = () => {
           </h1>
           <p className="text-[#6b7280] text-base leading-relaxed max-w-[400px] mx-auto">
             Clique no botão abaixo para verificar seu e-mail e ativar sua conta
-            no CRM Estética.
+            no ClinicAI.
           </p>
         </div>
 
