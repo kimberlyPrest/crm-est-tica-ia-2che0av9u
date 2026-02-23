@@ -4,7 +4,7 @@
     "evolution-webhook-handler": 2,
     "gemini-process-message": 4,
     "evolution-send-message": 3,
-    "evolution-check-status": 4,
+    "evolution-check-status": 5,
     "evolution-disconnect": 3,
     "create-user": 8
   }
