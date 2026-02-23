@@ -33,14 +33,14 @@ export function useClients() {
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const [filter, setFilter] = useState<ClientFilter>('all')
 
   const fetchClients = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const { data, error } = await supabase
+      const { data, error: supabaseError } = await supabase
         .from('leads')
         .select(
           `
@@ -62,7 +62,7 @@ export function useClients() {
         .eq('status.name', 'Cliente')
         .order('name', { ascending: true })
 
-      if (error) throw error
+      if (supabaseError) throw supabaseError
 
       setClients(data as unknown as Client[])
     } catch (err) {
@@ -82,24 +82,24 @@ export function useClients() {
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
       const matchesName = client.name?.toLowerCase().includes(q)
-      const matchesPhone = client.phone.includes(q)
+      const matchesPhone = client.phone?.includes(q)
       if (!matchesName && !matchesPhone) return false
     }
 
     // 2. Filter Logic
     if (filter === 'all') return true
 
-    const hasPending = client.deals.some(
+    const hasPending = client.deals?.some(
       (d) => d.completed_sessions < d.total_sessions && d.status === 'active',
     )
-    const hasCompleted = client.deals.some(
+    const hasCompleted = client.deals?.some(
       (d) => d.completed_sessions >= d.total_sessions,
     )
 
     const today = startOfDay(new Date())
     const nextWeek = addDays(today, 7)
 
-    const hasNearReturn = client.deals.some((d) => {
+    const hasNearReturn = client.deals?.some((d) => {
       if (!d.next_session_due || d.status !== 'active') return false
       const due = new Date(d.next_session_due)
       return (
@@ -109,7 +109,7 @@ export function useClients() {
       )
     })
 
-    const hasOverdue = client.deals.some((d) => {
+    const hasOverdue = client.deals?.some((d) => {
       if (!d.next_session_due || d.status !== 'active') return false
       const due = new Date(d.next_session_due)
       return isBefore(due, today) && d.completed_sessions < d.total_sessions

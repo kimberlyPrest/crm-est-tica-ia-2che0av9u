@@ -24,7 +24,7 @@ export default function Clientes() {
     refresh,
   } = useClients()
 
-  const [localSearch, setLocalSearch] = useState(searchQuery)
+  const [localSearch, setLocalSearch] = useState<string>(searchQuery || '')
 
   // Modals state
   const [schedulingOpen, setSchedulingOpen] = useState(false)
@@ -37,7 +37,9 @@ export default function Clientes() {
   // Debounce search
   useEffect(() => {
     const handler = setTimeout(() => {
-      setSearchQuery(localSearch)
+      if (typeof setSearchQuery === 'function') {
+        setSearchQuery(localSearch)
+      }
     }, 300)
     return () => clearTimeout(handler)
   }, [localSearch, setSearchQuery])
@@ -95,7 +97,11 @@ export default function Clientes() {
           {filters.map((f) => (
             <button
               key={f.id}
-              onClick={() => setFilter(f.id)}
+              onClick={() => {
+                if (typeof setFilter === 'function') {
+                  setFilter(f.id)
+                }
+              }}
               className={cn(
                 'px-4 py-2 rounded-full text-sm font-medium transition-all duration-300',
                 filter === f.id
@@ -142,19 +148,25 @@ export default function Clientes() {
       <SchedulingModal
         open={schedulingOpen}
         onOpenChange={setSchedulingOpen}
-        lead={selectedClient}
+        lead={selectedClient as CRMLead | null}
         initialType="session"
         initialDealId={selectedDealId}
         onSuccess={() => {
-          refresh()
+          if (typeof refresh === 'function') {
+            refresh()
+          }
         }}
       />
 
       <LeadDetailsDrawer
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
-        lead={selectedClient as CRMLead}
-        onUpdate={refresh}
+        lead={selectedClient as CRMLead | null}
+        onUpdate={() => {
+          if (typeof refresh === 'function') {
+            refresh()
+          }
+        }}
         onAction={(action, lead) => {
           if (action === 'schedule') {
             handleSchedule(lead as Client)
