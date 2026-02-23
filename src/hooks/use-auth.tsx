@@ -146,6 +146,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           name,
           organization_name: organizationName || undefined,
         },
+        emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     })
     return { error }
