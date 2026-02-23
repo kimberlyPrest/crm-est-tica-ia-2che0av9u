@@ -13,7 +13,7 @@ export default function KnowledgeBase() {
         'Configure a personalidade, regras e comportamento do seu assistente virtual.',
       icon: Bot,
       color: 'bg-brand-lime/10 text-brand-lime-dark',
-      path: '/base-conhecimento/agente-ia',
+      action: () => navigate('/base-conhecimento/agente-ia'),
     },
     {
       title: 'Arquivos e Áudios',
@@ -21,14 +21,14 @@ export default function KnowledgeBase() {
         'Gerencie os documentos e áudios que o agente usa como base de conhecimento.',
       icon: FileText,
       color: 'bg-sky-100 text-sky-600',
-      path: '/base-conhecimento/arquivos', // Future route
+      action: () => navigate('/base-conhecimento/arquivos'),
     },
     {
       title: 'Configurações Gerais',
       description: 'Defina preferências globais da base de conhecimento.',
       icon: Settings,
       color: 'bg-purple-100 text-purple-600',
-      path: '/base-conhecimento/config', // Future route
+      action: () => navigate('/configuracoes'),
     },
   ]
 
@@ -49,7 +49,7 @@ export default function KnowledgeBase() {
             key={card.title}
             size="md"
             className="group hover:scale-[1.02] transition-all cursor-pointer flex flex-col justify-between h-[280px]"
-            onClick={() => card.path && navigate(card.path)}
+            onClick={card.action}
           >
             <div className="space-y-4">
               <div

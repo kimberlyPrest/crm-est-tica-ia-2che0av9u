@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { useAuth } from '@/hooks/use-auth'
 
 export interface FewShotExample {
   id: string
@@ -43,26 +44,24 @@ const defaultConfig: AgentConfig = {
 
 const configSchema = z.object({
   agent_name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
-  role_definition: z
-    .string()
-    .min(50, 'Definição do papel deve ter pelo menos 50 caracteres'),
-  company_info: z
-    .string()
-    .min(100, 'Informações da empresa devem ter pelo menos 100 caracteres'),
-  tone: z
-    .string()
-    .min(30, 'Definição de tom deve ter pelo menos 30 caracteres'),
+  role_definition: z.string().optional(),
+  company_info: z.string().optional(),
+  tone: z.string().optional(),
+  knowledge_instructions: z.string().optional(),
+  guardrails: z.string().optional(),
+  human_handover_rules: z.string().optional(),
   few_shot_examples: z
     .array(
       z.object({
-        question: z.string().min(1),
-        answer: z.string().min(1),
+        question: z.string().min(1, 'A pergunta é obrigatória'),
+        answer: z.string().min(1, 'A resposta é obrigatória'),
       }),
     )
-    .min(1, 'Adicione pelo menos 1 exemplo completo'),
+    .optional(),
 })
 
 export function useAgentConfig() {
+  const { organizationId } = useAuth()
   const [config, setConfig] = useState<AgentConfig>(defaultConfig)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -74,54 +73,40 @@ export function useAgentConfig() {
 
   // Load Config
   useEffect(() => {
+    if (!organizationId) return // Wait until organizationId is available
+
     async function loadConfig() {
       try {
         setLoading(true)
 
         // Load files for reference
-        const { data: files } = await supabase
-          .from('knowledge_base_files')
-          .select('name')
-          .eq('is_active', true)
-        const { data: audios } = await supabase
-          .from('knowledge_base_audios')
-          .select('name')
-          .eq('is_active', true)
-
-        setActiveFiles([
-          ...(files?.map((f) => ({ name: f.name, type: 'file' as const })) ||
-            []),
-          ...(audios?.map((a) => ({ name: a.name, type: 'audio' as const })) ||
-            []),
+        const [filesRes, audiosRes] = await Promise.all([
+          supabase
+            .from('knowledge_base_files')
+            .select('name')
+            .eq('is_active', true),
+          supabase
+            .from('knowledge_base_audios')
+            .select('name')
+            .eq('is_active', true),
         ])
 
-        // Get current user and organization_id
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser()
-        if (userError) throw userError
-
-        const { data: userData, error: orgError } = await supabase
-          .from('users')
-          .select('organization_id')
-          .eq('id', user?.id)
-          .single()
-
-        if (orgError || !userData?.organization_id) {
-          console.error('Organization not found for user')
-          toast.error('Erro de permissão da organização')
-          setLoading(false)
-          return
-        }
-
-        const orgId = userData.organization_id
+        setActiveFiles([
+          ...(filesRes.data?.map((f) => ({
+            name: f.name,
+            type: 'file' as const,
+          })) || []),
+          ...(audiosRes.data?.map((a) => ({
+            name: a.name,
+            type: 'audio' as const,
+          })) || []),
+        ])
 
         // Load Agent Config
         let { data, error } = await supabase
           .from('agent_config')
           .select('*')
-          .eq('organization_id', orgId)
+          .eq('organization_id', organizationId)
           .limit(1)
           .maybeSingle()
 
@@ -134,7 +119,7 @@ export function useAgentConfig() {
             .insert({
               agent_name: defaultConfig.agent_name,
               is_enabled: false,
-              organization_id: orgId,
+              organization_id: organizationId,
             })
             .select()
             .single()
@@ -187,7 +172,7 @@ export function useAgentConfig() {
     }
 
     loadConfig()
-  }, [])
+  }, [organizationId])
 
   // Auto-save draft
   useEffect(() => {
@@ -248,6 +233,15 @@ export function useAgentConfig() {
         if (element)
           element.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
+        setSaving(false)
+        return
+      }
+
+      if (
+        config.auto_schedule_enabled &&
+        config.auto_schedule_start_time === config.auto_schedule_end_time
+      ) {
+        toast.error('O horário de início e fim não podem ser iguais')
         setSaving(false)
         return
       }
