@@ -92,10 +92,16 @@ export function useDashboardData() {
       const startOfPreviousWeek = startOfWeek(subWeeks(now, 1)).toISOString()
 
       // 1. Leads
-      const { count: totalLeads } = await supabase
-        .from('leads')
-        .select('id', { count: 'exact' })
-        .limit(0)
+      const { data: viewData, error: viewError } = await supabase
+        .from('dashboard_kpis')
+        .select('total_leads')
+        .maybeSingle()
+
+      if (viewError && viewError.code !== 'PGRST116') {
+        console.error('Error fetching dashboard_kpis:', viewError)
+      }
+
+      const totalLeads = viewData?.total_leads || 0
 
       const { count: leadsCurrentMonth } = await supabase
         .from('leads')
@@ -128,7 +134,6 @@ export function useDashboardData() {
         ) || 0
 
       // 3. Appointments
-      // Avoid head: true which causes JSON parse errors on empty responses in some environments
       const { count: totalAppointments } = await supabase
         .from('appointments')
         .select('id', { count: 'exact' })
@@ -176,7 +181,7 @@ export function useDashboardData() {
       setKpis((prev) => ({
         leads: {
           ...prev.leads,
-          value: totalLeads || 0,
+          value: Number(totalLeads) || 0,
           change: leadsChange * 100,
           trend: leadsChange >= 0 ? 'up' : 'down',
           loading: false,
