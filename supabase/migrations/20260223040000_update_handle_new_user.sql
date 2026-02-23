@@ -1,4 +1,4 @@
--- Fix existing nulls in auth.users
+-- Fix existing nulls in auth.users, excluding phone to avoid users_phone_key unique constraint violation
 UPDATE auth.users
 SET
   confirmation_token = COALESCE(confirmation_token, ''),
@@ -6,14 +6,13 @@ SET
   email_change_token_new = COALESCE(email_change_token_new, ''),
   email_change = COALESCE(email_change, ''),
   email_change_token_current = COALESCE(email_change_token_current, ''),
-  phone = COALESCE(phone, ''),
   phone_change = COALESCE(phone_change, ''),
   phone_change_token = COALESCE(phone_change_token, ''),
   reauthentication_token = COALESCE(reauthentication_token, '')
 WHERE
   confirmation_token IS NULL OR recovery_token IS NULL
   OR email_change_token_new IS NULL OR email_change IS NULL
-  OR email_change_token_current IS NULL OR phone IS NULL
+  OR email_change_token_current IS NULL
   OR phone_change IS NULL OR phone_change_token IS NULL
   OR reauthentication_token IS NULL;
 
@@ -26,7 +25,6 @@ BEGIN
   NEW.email_change_token_new = COALESCE(NEW.email_change_token_new, '');
   NEW.email_change = COALESCE(NEW.email_change, '');
   NEW.email_change_token_current = COALESCE(NEW.email_change_token_current, '');
-  NEW.phone = COALESCE(NEW.phone, '');
   NEW.phone_change = COALESCE(NEW.phone_change, '');
   NEW.phone_change_token = COALESCE(NEW.phone_change_token, '');
   NEW.reauthentication_token = COALESCE(NEW.reauthentication_token, '');
