@@ -21,7 +21,12 @@ CREATE TRIGGER ensure_auth_users_no_nulls
   BEFORE INSERT OR UPDATE ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.fix_auth_users_nulls();
 
--- 3. Fix existing auth.users records for the phone column and others
+-- 3. Fix the unique constraint on phone so it doesn't fail on empty strings
+ALTER TABLE auth.users DROP CONSTRAINT IF EXISTS users_phone_key;
+DROP INDEX IF EXISTS users_phone_key;
+CREATE UNIQUE INDEX users_phone_key ON auth.users (phone) WHERE phone IS NOT NULL AND phone <> '';
+
+-- 4. Fix existing auth.users records for the phone column and others
 UPDATE auth.users
 SET
   confirmation_token = COALESCE(confirmation_token, ''),
@@ -41,25 +46,24 @@ WHERE
   OR reauthentication_token IS NULL;
 
 
--- 4. Refactor Constraints for Multi-Tenancy
+-- 5. Refactor Constraints for Multi-Tenancy
 
--- 4.1 Status Table
+-- 5.1 Status Table
 ALTER TABLE public.status DROP CONSTRAINT IF EXISTS status_name_key;
 DROP INDEX IF EXISTS status_name_key;
 ALTER TABLE public.status ADD CONSTRAINT status_name_organization_id_key UNIQUE (name, organization_id);
 
--- 4.2 Products Table
+-- 5.2 Products Table
 ALTER TABLE public.products DROP CONSTRAINT IF EXISTS products_name_key;
 DROP INDEX IF EXISTS products_name_key;
 ALTER TABLE public.products ADD CONSTRAINT products_name_organization_id_key UNIQUE (name, organization_id);
 
--- 4.3 Cadence Templates Table
+-- 5.3 Cadence Templates Table
 ALTER TABLE public.cadence_templates DROP CONSTRAINT IF EXISTS cadence_templates_name_key;
 DROP INDEX IF EXISTS cadence_templates_name_key;
 ALTER TABLE public.cadence_templates ADD CONSTRAINT cadence_templates_name_organization_id_key UNIQUE (name, organization_id);
 
--- 4.4 WhatsApp Instances Table
+-- 5.4 WhatsApp Instances Table
 ALTER TABLE public.whatsapp_instances DROP CONSTRAINT IF EXISTS whatsapp_instances_instance_name_key;
 DROP INDEX IF EXISTS whatsapp_instances_instance_name_key;
 ALTER TABLE public.whatsapp_instances ADD CONSTRAINT whatsapp_instances_instance_name_org_id_key UNIQUE (instance_name, organization_id);
-
