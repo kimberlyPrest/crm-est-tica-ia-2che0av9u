@@ -33,6 +33,10 @@ export function WhatsAppSettings() {
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
 
+  const [qrCountdown, setQrCountdown] = useState<number>(0)
+  const [qrReceivedAt, setQrReceivedAt] = useState<number | null>(null)
+  const [currentQr, setCurrentQr] = useState<string | null>(null)
+
   const fetchInstances = async () => {
     if (!organizationId) return
     try {
@@ -76,6 +80,45 @@ export function WhatsAppSettings() {
       supabase.removeChannel(channel)
     }
   }, [organizationId])
+
+  useEffect(() => {
+    const instance = instances[0]
+    if (
+      instance &&
+      instance.qr_code &&
+      instance.connection_status !== 'connected'
+    ) {
+      const updatedTime = instance.updated_at
+        ? new Date(instance.updated_at).getTime()
+        : Date.now()
+
+      if (instance.qr_code !== currentQr || updatedTime !== qrReceivedAt) {
+        setCurrentQr(instance.qr_code)
+        setQrReceivedAt(updatedTime)
+      }
+    } else {
+      setCurrentQr(null)
+      setQrReceivedAt(null)
+      setQrCountdown(0)
+    }
+  }, [instances, currentQr, qrReceivedAt])
+
+  useEffect(() => {
+    if (!qrReceivedAt) {
+      setQrCountdown(0)
+      return
+    }
+
+    const updateTimer = () => {
+      const now = Date.now()
+      const diff = Math.max(0, Math.floor((now - qrReceivedAt) / 1000))
+      setQrCountdown(Math.max(0, 30 - diff))
+    }
+
+    updateTimer()
+    const interval = setInterval(updateTimer, 1000)
+    return () => clearInterval(interval)
+  }, [qrReceivedAt])
 
   const handleCreateInstance = async () => {
     setActionLoading('create')
@@ -329,13 +372,59 @@ export function WhatsAppSettings() {
                     <p className="text-sm font-semibold text-gray-800 mb-4 text-center">
                       Escaneie o QR Code
                     </p>
-                    <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
-                      <img
-                        src={instance.qr_code}
-                        alt="WhatsApp QR Code"
-                        className="w-48 h-48 object-contain"
-                      />
+
+                    <div className="relative w-48 h-48 mb-2">
+                      <div
+                        className={cn(
+                          'bg-white p-2 rounded-xl border border-gray-200 shadow-sm w-full h-full transition-all duration-300',
+                          qrCountdown === 0 ? 'blur-sm opacity-40' : '',
+                        )}
+                      >
+                        <img
+                          src={instance.qr_code}
+                          alt="WhatsApp QR Code"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      {qrCountdown === 0 && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 bg-white/50 rounded-xl">
+                          <AlertCircle className="h-8 w-8 text-red-500 mb-2 drop-shadow-sm" />
+                          <span className="text-sm font-bold text-red-600 drop-shadow-sm">
+                            QR Code expirado
+                          </span>
+                        </div>
+                      )}
                     </div>
+
+                    {qrCountdown > 0 ? (
+                      <div className="flex items-center gap-2 mt-3 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <p className="text-xs font-medium text-gray-600">
+                          Expira em:{' '}
+                          <span className="text-green-600 font-bold">
+                            {qrCountdown}s
+                          </span>
+                        </p>
+                      </div>
+                    ) : (
+                      <AppButton
+                        variant="outline"
+                        size="sm"
+                        className="mt-3 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                        onClick={() => handleRefreshStatus(instance.id)}
+                        loading={actionLoading === `refresh-${instance.id}`}
+                      >
+                        <RefreshCw
+                          className={cn(
+                            'h-4 w-4 mr-2',
+                            actionLoading === `refresh-${instance.id}` &&
+                              'animate-spin',
+                          )}
+                        />
+                        Atualizar QR Code
+                      </AppButton>
+                    )}
+
                     <p className="text-xs text-gray-500 mt-4 text-center leading-relaxed">
                       Abra o WhatsApp no seu celular, vá em Aparelhos Conectados
                       e escaneie.
