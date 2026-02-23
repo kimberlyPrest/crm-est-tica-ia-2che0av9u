@@ -41,12 +41,38 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
 
-    // 3. Call Evolution API (Mock Logic here as I don't have Evolution URL keys in this context)
-    // In a real scenario, we would use EVOLUTION_API_URL and EVOLUTION_API_KEY
-    // For now, we simulate success and return a generated instance name
+    const EVOLUTION_API_URL = Deno.env.get('EVOLUTION_API_URL')!
+    const EVOLUTION_API_KEY = Deno.env.get('EVOLUTION_API_KEY')!
+
+    if (!EVOLUTION_API_URL || !EVOLUTION_API_KEY) {
+      throw new Error('Evolution API configuration is missing')
+    }
 
     // Generate instance name: unique per org to avoid collision
     const instanceName = `instance_${organizationId.replace(/-/g, '').slice(0, 12)}`
+
+    // Call Evolution API
+    const createRes = await fetch(`${EVOLUTION_API_URL}/instance/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': EVOLUTION_API_KEY,
+      },
+      body: JSON.stringify({
+        instanceName,
+        qrcode: true,
+        integration: 'WHATSAPP-BAILEYS',
+        webhook: Deno.env.get('WEBHOOK_URL') // Optional, if they have a global webhook configured
+      }),
+    })
+
+    if (!createRes.ok) {
+      const errorText = await createRes.text()
+      throw new Error(`Evolution API Error: ${errorText}`)
+    }
+
+    const evoData = await createRes.json()
+    const qrCode = evoData?.qrcode?.base64 || evoData?.hash?.qrcode || null // Adjust based on Evolution API version
 
     // Upsert instance into DB
     const { data: instance, error: dbError } = await supabaseAdmin
@@ -57,9 +83,7 @@ Deno.serve(async (req) => {
           organization_id: organizationId,
           connection_status: 'connecting',
           updated_at: new Date().toISOString(),
-          // We can generate a mock QR Code here or let the connection logic handle it
-          qr_code:
-            'https://img.usecurling.com/p/300/300?q=qr%20code&color=black', // Placeholder
+          qr_code: qrCode,
         },
         { onConflict: 'instance_name' },
       )

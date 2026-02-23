@@ -50,30 +50,13 @@ Deno.serve(async (req) => {
     }
 
     // 3. Input Validation
-    const { leadId, message, sentBy } = await req.json().catch(() => ({}))
+    const { leadId, message, sentBy, messageType = 'text', mediaUrl } = await req.json().catch(() => ({}))
 
-    if (!leadId || !message || !sentBy) {
+    if (!leadId || (!message && !mediaUrl) || !sentBy) {
       return new Response(
         JSON.stringify({
           error: 'Bad Request',
-          message: 'Missing required fields: leadId, message, sentBy',
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        },
-      )
-    }
-
-    if (
-      typeof message !== 'string' ||
-      message.trim().length === 0 ||
-      message.length > 4000
-    ) {
-      return new Response(
-        JSON.stringify({
-          error: 'Bad Request',
-          message: 'Message must be a non-empty string under 4000 characters',
+          message: 'Missing required fields: leadId, message (or mediaUrl), sentBy',
         }),
         {
           status: 400,
@@ -95,7 +78,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    const trimmedMessage = message.trim()
+    const trimmedMessage = message ? message.trim() : ''
 
     // 4. Rate Limiting (20 messages per minute per lead context)
     const oneMinuteAgo = new Date(Date.now() - 60000).toISOString()
@@ -186,7 +169,29 @@ Deno.serve(async (req) => {
     const remoteJid = `${cleanPhone}@s.whatsapp.net`
 
     // 8. Send to Evolution API
-    const sendUrl = `${EVOLUTION_API_URL}/message/sendText/${instance.instance_name}`
+    let sendUrl = `${EVOLUTION_API_URL}/message/sendText/${instance.instance_name}`
+    let bodyPayload: any = {
+      number: remoteJid,
+      text: trimmedMessage,
+      linkPreview: false,
+    }
+
+    if (messageType === 'audio' && mediaUrl) {
+      sendUrl = `${EVOLUTION_API_URL}/message/sendWhatsAppAudio/${instance.instance_name}`
+      bodyPayload = {
+        number: remoteJid,
+        audio: mediaUrl,
+        delay: 2000
+      }
+    } else if (messageType === 'document' && mediaUrl) {
+      sendUrl = `${EVOLUTION_API_URL}/message/sendMedia/${instance.instance_name}`
+      bodyPayload = {
+        number: remoteJid,
+        mediatype: "document",
+        media: mediaUrl,
+        delay: 2000
+      }
+    }
 
     let evolutionData: any = null
     let attempt = 0
@@ -203,11 +208,7 @@ Deno.serve(async (req) => {
             'Content-Type': 'application/json',
             apikey: EVOLUTION_API_KEY,
           },
-          body: JSON.stringify({
-            number: remoteJid,
-            text: trimmedMessage,
-            linkPreview: false,
-          }),
+          body: JSON.stringify(bodyPayload),
           signal: controller.signal,
         })
 
@@ -277,10 +278,10 @@ Deno.serve(async (req) => {
       .from('messages')
       .insert({
         lead_id: leadId,
-        content: trimmedMessage,
+        content: messageType === 'audio' ? '[Áudio Enviado]' : messageType === 'document' ? '[Documento Enviado]' : trimmedMessage,
         direction: 'outbound',
         sent_by: sentBy,
-        message_type: 'text',
+        message_type: messageType,
         meta_message_id: messageId,
         whatsapp_instance_id: instance.id,
       })
