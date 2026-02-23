@@ -320,7 +320,7 @@ export function WhatsAppSettings() {
                 </div>
               </div>
 
-              {instance.connection_status === 'qr_received' &&
+              {instance.connection_status !== 'connected' &&
                 instance.qr_code && (
                   <div className="md:w-72 bg-white rounded-2xl p-6 flex flex-col items-center justify-center border border-gray-100 shadow-sm">
                     <div className="flex items-center justify-center h-10 w-10 bg-yellow-50 rounded-full text-yellow-600 mb-3">
@@ -357,21 +357,24 @@ export function WhatsAppSettings() {
                 </div>
               )}
 
-              {(instance.connection_status === 'disconnected' ||
-                instance.connection_status === 'failed') && (
-                <div className="md:w-72 bg-red-50/50 rounded-2xl p-6 flex flex-col items-center justify-center border border-red-100">
-                  <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-4 shadow-inner">
-                    <AlertCircle className="h-8 w-8" />
+              {instance.connection_status !== 'connected' &&
+                !instance.qr_code && (
+                  <div className="md:w-72 bg-red-50/50 rounded-2xl p-6 flex flex-col items-center justify-center border border-red-100">
+                    <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-4 shadow-inner">
+                      <AlertCircle className="h-8 w-8" />
+                    </div>
+                    <p className="text-base font-bold text-red-800 text-center">
+                      {instance.connection_status === 'connecting'
+                        ? 'Conectando...'
+                        : 'Desconectado'}
+                    </p>
+                    <p className="text-sm text-red-600/80 mt-2 text-center">
+                      {instance.connection_status === 'connecting'
+                        ? 'Aguarde um momento.'
+                        : 'Tente atualizar o status para gerar um novo QR Code.'}
+                    </p>
                   </div>
-                  <p className="text-base font-bold text-red-800 text-center">
-                    Falha na Conexão
-                  </p>
-                  <p className="text-sm text-red-600/80 mt-2 text-center">
-                    Tente atualizar o status ou remover a instância e criar
-                    novamente.
-                  </p>
-                </div>
-              )}
+                )}
             </GlassCard>
           ))}
         </div>
