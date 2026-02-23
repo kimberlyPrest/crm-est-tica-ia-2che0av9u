@@ -17,7 +17,7 @@ WHERE
   OR reauthentication_token IS NULL;
 
 -- Trigger to prevent future nulls in auth.users
-CREATE OR REPLACE FUNCTION auth.fix_auth_users_nulls()
+CREATE OR REPLACE FUNCTION public.fix_auth_users_nulls()
 RETURNS trigger AS $$
 BEGIN
   NEW.confirmation_token = COALESCE(NEW.confirmation_token, '');
@@ -30,12 +30,12 @@ BEGIN
   NEW.reauthentication_token = COALESCE(NEW.reauthentication_token, '');
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 DROP TRIGGER IF EXISTS ensure_auth_users_no_nulls ON auth.users;
 CREATE TRIGGER ensure_auth_users_no_nulls
   BEFORE INSERT OR UPDATE ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION auth.fix_auth_users_nulls();
+  FOR EACH ROW EXECUTE FUNCTION public.fix_auth_users_nulls();
 
 -- Update handle_new_user to correctly create org and seed statuses
 CREATE OR REPLACE FUNCTION public.handle_new_user()
