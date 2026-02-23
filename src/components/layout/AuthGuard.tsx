@@ -11,9 +11,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (loading) return
 
-    if (!session && location.pathname !== '/') {
-      navigate('/', { replace: true })
-    } else if (session && location.pathname === '/') {
+    const isAuthRoute =
+      location.pathname === '/login' || location.pathname === '/signup'
+
+    if (!session && !isAuthRoute) {
+      navigate('/login', { replace: true })
+    } else if (session && isAuthRoute) {
       navigate('/dashboard', { replace: true })
     }
   }, [session, loading, navigate, location.pathname])

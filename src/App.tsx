@@ -1,11 +1,12 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AuthProvider } from '@/hooks/use-auth'
 import { AuthGuard } from '@/components/layout/AuthGuard'
 
-import Index from './pages/Index'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import Crm from './pages/Crm'
 import Clientes from './pages/Clientes'
@@ -26,10 +27,26 @@ const App = () => (
         <Sonner />
         <Routes>
           <Route
+            path="/login"
+            element={
+              <AuthGuard>
+                <Login />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <AuthGuard>
+                <Signup />
+              </AuthGuard>
+            }
+          />
+          <Route
             path="/"
             element={
               <AuthGuard>
-                <Index />
+                <Navigate to="/dashboard" replace />
               </AuthGuard>
             }
           />
