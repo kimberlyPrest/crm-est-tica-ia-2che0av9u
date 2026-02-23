@@ -4,6 +4,8 @@ import { useDashboardData } from '@/hooks/use-dashboard-data'
 import { KPICard } from '@/components/dashboard/KPICard'
 import { SalesFunnel } from '@/components/dashboard/SalesFunnel'
 import { ActivityFeed } from '@/components/dashboard/ActivityFeed'
+import { OnboardingDashboard } from '@/components/dashboard/OnboardingDashboard'
+import { Loader2 } from 'lucide-react'
 
 export default function Dashboard() {
   const {
@@ -21,6 +23,19 @@ export default function Dashboard() {
   })
   const formattedDate =
     currentDate.charAt(0).toUpperCase() + currentDate.slice(1)
+
+  if (kpis.leads.loading) {
+    return (
+      <div className="flex h-[calc(100vh-100px)] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-brand-lime" />
+      </div>
+    )
+  }
+
+  // Se não houver leads, mostra a tela de onboarding
+  if (kpis.leads.value === 0) {
+    return <OnboardingDashboard />
+  }
 
   return (
     <div className="space-y-8 animate-fade-in pb-10">
