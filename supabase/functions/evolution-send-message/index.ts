@@ -21,43 +21,78 @@ Deno.serve(async (req) => {
     }
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-    
+
     // Validate User (using anon key would be standard, but we use service role for DB actions later.
     // We verify the token manually or use a client with the token.)
-    const supabaseAuth = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_ANON_KEY')!, {
-        global: { headers: { Authorization: authHeader } }
-    })
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser()
+    const supabaseAuth = createClient(
+      SUPABASE_URL,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      {
+        global: { headers: { Authorization: authHeader } },
+      },
+    )
+    const {
+      data: { user },
+      error: authError,
+    } = await supabaseAuth.auth.getUser()
 
     if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized', message: 'Invalid or missing token' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return new Response(
+        JSON.stringify({
+          error: 'Unauthorized',
+          message: 'Invalid or missing token',
+        }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
     }
 
     // 3. Input Validation
     const { leadId, message, sentBy } = await req.json().catch(() => ({}))
 
     if (!leadId || !message || !sentBy) {
-      return new Response(JSON.stringify({ error: 'Bad Request', message: 'Missing required fields: leadId, message, sentBy' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return new Response(
+        JSON.stringify({
+          error: 'Bad Request',
+          message: 'Missing required fields: leadId, message, sentBy',
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
     }
 
-    if (typeof message !== 'string' || message.trim().length === 0 || message.length > 4000) {
-      return new Response(JSON.stringify({ error: 'Bad Request', message: 'Message must be a non-empty string under 4000 characters' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+    if (
+      typeof message !== 'string' ||
+      message.trim().length === 0 ||
+      message.length > 4000
+    ) {
+      return new Response(
+        JSON.stringify({
+          error: 'Bad Request',
+          message: 'Message must be a non-empty string under 4000 characters',
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
     }
 
     if (!['ai', 'human', 'system'].includes(sentBy)) {
-       return new Response(JSON.stringify({ error: 'Bad Request', message: 'Invalid sentBy value. Must be ai, human, or system' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return new Response(
+        JSON.stringify({
+          error: 'Bad Request',
+          message: 'Invalid sentBy value. Must be ai, human, or system',
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
     }
 
     const trimmedMessage = message.trim()
@@ -65,21 +100,28 @@ Deno.serve(async (req) => {
     // 4. Rate Limiting (20 messages per minute per lead context)
     const oneMinuteAgo = new Date(Date.now() - 60000).toISOString()
     const { count: recentMessagesCount, error: rateLimitError } = await supabase
-        .from('messages')
-        .select('id', { count: 'exact', head: true })
-        .eq('lead_id', leadId)
-        .eq('direction', 'outbound')
-        .gte('created_at', oneMinuteAgo)
+      .from('messages')
+      .select('id', { count: 'exact', head: true })
+      .eq('lead_id', leadId)
+      .eq('direction', 'outbound')
+      .gte('created_at', oneMinuteAgo)
 
     if (rateLimitError) {
-        throw new Error(`Rate limit check failed: ${rateLimitError.message}`)
+      throw new Error(`Rate limit check failed: ${rateLimitError.message}`)
     }
 
     if ((recentMessagesCount || 0) >= 20) {
-        return new Response(JSON.stringify({ error: 'Too Many Requests', message: 'Rate limit exceeded. Please wait before sending more messages to this lead.' }), {
-            status: 429,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        })
+      return new Response(
+        JSON.stringify({
+          error: 'Too Many Requests',
+          message:
+            'Rate limit exceeded. Please wait before sending more messages to this lead.',
+        }),
+        {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
     }
 
     // 5. Fetch Lead
@@ -90,17 +132,26 @@ Deno.serve(async (req) => {
       .single()
 
     if (leadError || !lead) {
-      return new Response(JSON.stringify({ error: 'Not Found', message: 'Lead not found' }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return new Response(
+        JSON.stringify({ error: 'Not Found', message: 'Lead not found' }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
     }
 
     if (!lead.phone) {
-        return new Response(JSON.stringify({ error: 'Bad Request', message: 'Lead has no phone number' }), {
-            status: 400,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        })
+      return new Response(
+        JSON.stringify({
+          error: 'Bad Request',
+          message: 'Lead has no phone number',
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
     }
 
     // 6. Fetch Active Instance
@@ -112,14 +163,22 @@ Deno.serve(async (req) => {
       .maybeSingle()
 
     if (instanceError) {
-        throw new Error(`Database error fetching instance: ${instanceError.message}`)
+      throw new Error(
+        `Database error fetching instance: ${instanceError.message}`,
+      )
     }
 
     if (!instance) {
-      return new Response(JSON.stringify({ error: 'Service Unavailable', message: 'No connected WhatsApp instance found' }), {
-        status: 503,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return new Response(
+        JSON.stringify({
+          error: 'Service Unavailable',
+          message: 'No connected WhatsApp instance found',
+        }),
+        {
+          status: 503,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
     }
 
     // 7. Normalize Phone
@@ -128,132 +187,156 @@ Deno.serve(async (req) => {
 
     // 8. Send to Evolution API
     const sendUrl = `${EVOLUTION_API_URL}/message/sendText/${instance.instance_name}`
-    
+
     let evolutionData: any = null
     let attempt = 0
     const maxRetries = 1
 
     while (attempt <= maxRetries) {
-        try {
-            const controller = new AbortController()
-            const timeoutId = setTimeout(() => controller.abort(), 15000) // 15s timeout
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 15000) // 15s timeout
 
-            const response = await fetch(sendUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'apikey': EVOLUTION_API_KEY
-                },
-                body: JSON.stringify({
-                    number: remoteJid,
-                    text: trimmedMessage,
-                    linkPreview: false
-                }),
-                signal: controller.signal
-            })
-            
-            clearTimeout(timeoutId)
+        const response = await fetch(sendUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: EVOLUTION_API_KEY,
+          },
+          body: JSON.stringify({
+            number: remoteJid,
+            text: trimmedMessage,
+            linkPreview: false,
+          }),
+          signal: controller.signal,
+        })
 
-            if (response.ok) {
-                evolutionData = await response.json()
-                break
-            }
+        clearTimeout(timeoutId)
 
-            // If 500 or 503, retry
-            if (response.status === 500 || response.status === 503) {
-                throw new Error(`Temporary API Error: ${response.status}`)
-            }
-
-            // Non-retryable error
-            const errorText = await response.text()
-            throw new Error(`Evolution API Error (${response.status}): ${errorText}`)
-
-        } catch (err: any) {
-            attempt++
-            console.warn(`[evolution-send-message] Attempt ${attempt} failed:`, err.message)
-            
-            if (attempt > maxRetries) {
-                // Log failure to DB as per requirements
-                const failureMessage = `[ERRO DE ENVIO] ${trimmedMessage} - Detalhes: ${err.message}`
-                await supabase.from('messages').insert({
-                    lead_id: leadId,
-                    content: failureMessage.slice(0, 4000), // Ensure it fits
-                    direction: 'outbound',
-                    sent_by: sentBy,
-                    message_type: 'text',
-                    whatsapp_instance_id: instance.id
-                })
-
-                return new Response(JSON.stringify({ 
-                    error: 'External Service Error', 
-                    message: `Failed to send message after retries: ${err.message}` 
-                }), {
-                    status: 502,
-                    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                })
-            }
-            
-            // Wait 2s before retry
-            await new Promise(r => setTimeout(r, 2000))
+        if (response.ok) {
+          evolutionData = await response.json()
+          break
         }
+
+        // If 500 or 503, retry
+        if (response.status === 500 || response.status === 503) {
+          throw new Error(`Temporary API Error: ${response.status}`)
+        }
+
+        // Non-retryable error
+        const errorText = await response.text()
+        throw new Error(
+          `Evolution API Error (${response.status}): ${errorText}`,
+        )
+      } catch (err: any) {
+        attempt++
+        console.warn(
+          `[evolution-send-message] Attempt ${attempt} failed:`,
+          err.message,
+        )
+
+        if (attempt > maxRetries) {
+          // Log failure to DB as per requirements
+          const failureMessage = `[ERRO DE ENVIO] ${trimmedMessage} - Detalhes: ${err.message}`
+          await supabase.from('messages').insert({
+            lead_id: leadId,
+            content: failureMessage.slice(0, 4000), // Ensure it fits
+            direction: 'outbound',
+            sent_by: sentBy,
+            message_type: 'text',
+            whatsapp_instance_id: instance.id,
+          })
+
+          return new Response(
+            JSON.stringify({
+              error: 'External Service Error',
+              message: `Failed to send message after retries: ${err.message}`,
+            }),
+            {
+              status: 502,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            },
+          )
+        }
+
+        // Wait 2s before retry
+        await new Promise((r) => setTimeout(r, 2000))
+      }
     }
 
     // 9. Process Success
     const messageId = evolutionData?.key?.id
     if (!messageId) {
-        console.warn('[evolution-send-message] Warning: No messageId returned from Evolution API')
+      console.warn(
+        '[evolution-send-message] Warning: No messageId returned from Evolution API',
+      )
     }
 
     // 10. Database Updates
     const { data: storedMessage, error: msgError } = await supabase
-        .from('messages')
-        .insert({
-            lead_id: leadId,
-            content: trimmedMessage,
-            direction: 'outbound',
-            sent_by: sentBy,
-            message_type: 'text',
-            meta_message_id: messageId,
-            whatsapp_instance_id: instance.id
-        })
-        .select()
-        .single()
+      .from('messages')
+      .insert({
+        lead_id: leadId,
+        content: trimmedMessage,
+        direction: 'outbound',
+        sent_by: sentBy,
+        message_type: 'text',
+        meta_message_id: messageId,
+        whatsapp_instance_id: instance.id,
+      })
+      .select()
+      .single()
 
     if (msgError) {
-        console.error('[evolution-send-message] Failed to store message:', msgError)
-        // We still return success because the message WAS sent
+      console.error(
+        '[evolution-send-message] Failed to store message:',
+        msgError,
+      )
+      // We still return success because the message WAS sent
     }
 
     // Update Lead
-    await supabase.from('leads').update({
+    await supabase
+      .from('leads')
+      .update({
         last_interaction_at: new Date().toISOString(),
-        has_pending_message: false
-    }).eq('id', leadId)
+        has_pending_message: false,
+      })
+      .eq('id', leadId)
 
     // Log Activity
-    const senderLabel = sentBy === 'ai' ? 'IA' : sentBy === 'human' ? 'Humano' : 'Sistema'
+    const senderLabel =
+      sentBy === 'ai' ? 'IA' : sentBy === 'human' ? 'Humano' : 'Sistema'
     await supabase.from('activities').insert({
-        lead_id: leadId,
-        type: 'message_sent',
-        description: `Mensagem enviada por ${senderLabel}`,
-        whatsapp_instance_id: instance.id
+      lead_id: leadId,
+      type: 'message_sent',
+      description: `Mensagem enviada por ${senderLabel}`,
+      whatsapp_instance_id: instance.id,
     })
 
-    return new Response(JSON.stringify({
+    return new Response(
+      JSON.stringify({
         success: true,
         messageId: storedMessage?.id,
         metaMessageId: messageId,
-        sentAt: new Date().toISOString()
-    }), {
+        sentAt: new Date().toISOString(),
+      }),
+      {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
-
+      },
+    )
   } catch (error: any) {
     console.error('[evolution-send-message] Critical error:', error)
-    return new Response(JSON.stringify({ error: 'Internal Server Error', message: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify({
+        error: 'Internal Server Error',
+        message: error.message,
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      },
+    )
   }
 })

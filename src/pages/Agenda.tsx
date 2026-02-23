@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import {
   useAppointments,
   AgendaView,
@@ -14,7 +15,6 @@ import { SchedulingModal } from '@/components/crm/SchedulingModal'
 import { supabase } from '@/lib/supabase/client'
 import { StaffMember } from '@/hooks/use-scheduling'
 import { Loader2 } from 'lucide-react'
-import { setHours, setMinutes } from 'date-fns'
 
 export default function Agenda() {
   const [view, setView] = useState<AgendaView>('month')
@@ -36,6 +36,19 @@ export default function Agenda() {
 
   const [schedulingOpen, setSchedulingOpen] = useState(false)
   const [initialTime, setInitialTime] = useState<string | null>(null)
+
+  // Fix for: Uncaught TypeError: setSearchQuery is not a function
+  // Safely grab the context and provide a fallback no-op function
+  const context = useOutletContext<{
+    setSearchQuery?: (query: string) => void
+  } | null>()
+  const setSearchQuery = context?.setSearchQuery ?? (() => {})
+
+  useEffect(() => {
+    // Clear global search state when Agenda mounts to prevent stale queries
+    setSearchQuery('')
+    return () => setSearchQuery('')
+  }, [setSearchQuery])
 
   const { appointments, loading, refresh } = useAppointments(
     view,
@@ -135,46 +148,17 @@ export default function Agenda() {
         onAppointmentClick={handleAppointmentClick}
       />
 
-      {/* Reusing SchedulingModal but we might need to tweak it to accept predefined date/time */}
-      {/* Since SchedulingModal in context expects 'lead', we might need to adapt.
-          However, the user story says "open scheduling modal with the time pre-selected".
-          If I reuse SchedulingModal, it requires a Lead. 
-          Assuming for now we open it empty or we need a "New Appointment" flow that selects lead first.
-          The current SchedulingModal is designed to be opened FROM a lead context.
-          
-          I will create a placeholder logic here: If we had a GeneralSchedulingModal that selects lead first, I'd use that.
-          Given constraints, I'll pass null lead and if the modal handles it, great.
-          Looking at SchedulingModal code: It requires `lead: CRMLead | null`.
-          If lead is null, it shows "Agendar Horário" and `lead?.name` which would be undefined.
-          It doesn't seem to have a lead selector.
-          
-          User story: "Clicking opens the scheduling modal with the time pre-selected."
-          Since I cannot rewrite SchedulingModal entirely to add Lead Selection (it's big), 
-          I will assume for this MVP that creating appointments from Agenda is limited or 
-          I should add a Lead Selector to SchedulingModal if I could.
-          
-          Actually, I can't modify SchedulingModal significantly to add Lead search without breaking scope potentially.
-          But wait, the user story implies full management.
-          
-          I will use the `NewLeadModal` pattern or similar if it existed.
-          For now, I'll pass `lead={null}` and `initialDate/Time` if I could.
-          But SchedulingModal doesn't take initialDate/Time props in the interface provided in context!
-          It uses `useScheduling` hook internally which resets state on open.
-          
-          I will skip passing initial time to SchedulingModal since it's not supported by the current component interface
-          without modifying `SchedulingModal.tsx` and `use-scheduling.ts`.
-          I will modify `SchedulingModal.tsx` to accept `initialDate` and `initialTime`?
-          The instructions say "You CAN create new files".
-          I'll modify `SchedulingModal.tsx` to accept optional `initialDate` and `initialTime`.
-      */}
-
-      {/* NOTE: I am not modifying SchedulingModal in this turn to avoid complexity explosion and breaking existing flows.
-          I will just render it. The user will have to select date/time again.
-          Wait, the User Story says: "clicking opens the scheduling modal with the time pre-selected".
-          I MUST implement this.
-          
-          I will update `SchedulingModal.tsx` and `use-scheduling.ts` to support initialDate/Time.
-      */}
+      <SchedulingModal
+        open={schedulingOpen}
+        onOpenChange={setSchedulingOpen}
+        lead={null}
+        initialDate={view === 'day' ? date : undefined}
+        initialTime={initialTime || undefined}
+        onSuccess={() => {
+          setSchedulingOpen(false)
+          refresh()
+        }}
+      />
     </div>
   )
 }
