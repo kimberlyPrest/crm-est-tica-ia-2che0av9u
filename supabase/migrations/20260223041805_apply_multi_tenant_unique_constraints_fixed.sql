@@ -1,11 +1,5 @@
--- Drop the existing unique constraint/index on phone in auth.users to allow multiple empty strings
-ALTER TABLE auth.users DROP CONSTRAINT IF EXISTS users_phone_key;
-DROP INDEX IF EXISTS auth.users_phone_key;
-
--- Recreate the unique index ignoring empty strings
-CREATE UNIQUE INDEX IF NOT EXISTS users_phone_key ON auth.users (phone) WHERE phone IS NOT NULL AND phone <> '';
-
 -- Fix existing auth.users nulls to ensure GoTrue compatibility and prevent 500 errors
+-- Excluding phone because it has a unique constraint that we cannot alter due to permission limitations
 UPDATE auth.users
 SET
   confirmation_token = COALESCE(confirmation_token, ''),
@@ -13,18 +7,17 @@ SET
   email_change_token_new = COALESCE(email_change_token_new, ''),
   email_change = COALESCE(email_change, ''),
   email_change_token_current = COALESCE(email_change_token_current, ''),
-  phone = COALESCE(phone, ''),
   phone_change = COALESCE(phone_change, ''),
   phone_change_token = COALESCE(phone_change_token, ''),
   reauthentication_token = COALESCE(reauthentication_token, '')
 WHERE
   confirmation_token IS NULL OR recovery_token IS NULL
   OR email_change_token_new IS NULL OR email_change IS NULL
-  OR email_change_token_current IS NULL OR phone IS NULL
+  OR email_change_token_current IS NULL
   OR phone_change IS NULL OR phone_change_token IS NULL
   OR reauthentication_token IS NULL;
 
--- Update the trigger function to include phone column per critical rules
+-- Update the trigger function to include columns per critical rules, excluding phone
 CREATE OR REPLACE FUNCTION public.fix_auth_users_nulls()
 RETURNS trigger AS $$
 BEGIN
@@ -33,7 +26,6 @@ BEGIN
   NEW.email_change_token_new = COALESCE(NEW.email_change_token_new, '');
   NEW.email_change = COALESCE(NEW.email_change, '');
   NEW.email_change_token_current = COALESCE(NEW.email_change_token_current, '');
-  NEW.phone = COALESCE(NEW.phone, '');
   NEW.phone_change = COALESCE(NEW.phone_change, '');
   NEW.phone_change_token = COALESCE(NEW.phone_change_token, '');
   NEW.reauthentication_token = COALESCE(NEW.reauthentication_token, '');
