@@ -12,8 +12,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { leadId, messageContent, messageId, agentConfigId } = await req.json()
-    console.log(`[GeminiAgent] Processing message ${messageId} for lead ${leadId}`)
+    const { leadId, messageContent, messageId, agentConfigId, organizationId } = await req.json()
+    console.log(`[GeminiAgent] Processing message ${messageId} for lead ${leadId} in org ${organizationId}`)
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
@@ -42,10 +42,16 @@ Deno.serve(async (req) => {
       return { role, parts: [{ text: msg.content }] }
     })
 
-    // 3. Fetch Knowledge Base Resources (Active Only)
+    // 3. Fetch Knowledge Base Resources (Active Only & Scoped to Org)
     const [{ data: audios }, { data: files }] = await Promise.all([
-      supabase.from('knowledge_base_audios').select('name, trigger_keywords').eq('is_active', true),
-      supabase.from('knowledge_base_files').select('name').eq('is_active', true)
+      supabase.from('knowledge_base_audios')
+        .select('name, trigger_keywords')
+        .eq('is_active', true)
+        .eq('organization_id', organizationId),
+      supabase.from('knowledge_base_files')
+        .select('name')
+        .eq('is_active', true)
+        .eq('organization_id', organizationId)
     ])
 
     const availableAudios = (audios || []).map(a => `- Áudio: "${a.name}" (Assuntos/Gatilhos: ${a.trigger_keywords?.join(', ') || 'N/A'})`).join('\n')
@@ -166,7 +172,11 @@ Deno.serve(async (req) => {
       }
       else if (functionCall.name === 'enviar_audio') {
         const audioName = functionCall.args.nome_audio
-        const { data: audioRecord } = await supabase.from('knowledge_base_audios').select('audio_path').ilike('name', `%${audioName}%`).maybeSingle()
+        const { data: audioRecord } = await supabase.from('knowledge_base_audios')
+          .select('audio_path')
+          .ilike('name', `%${audioName}%`)
+          .eq('organization_id', organizationId)
+          .maybeSingle()
         if (audioRecord && audioRecord.audio_path) {
           await supabase.functions.invoke('evolution-send-message', {
             body: { leadId, message: 'Audio', sentBy: 'ai', messageType: 'audio', mediaUrl: audioRecord.audio_path }
@@ -178,7 +188,11 @@ Deno.serve(async (req) => {
       }
       else if (functionCall.name === 'enviar_documento') {
         const fileName = functionCall.args.nome_arquivo
-        const { data: fileRecord } = await supabase.from('knowledge_base_files').select('file_path').ilike('name', `%${fileName}%`).maybeSingle()
+        const { data: fileRecord } = await supabase.from('knowledge_base_files')
+          .select('file_path')
+          .ilike('name', `%${fileName}%`)
+          .eq('organization_id', organizationId)
+          .maybeSingle()
         if (fileRecord && fileRecord.file_path) {
           await supabase.functions.invoke('evolution-send-message', {
             body: { leadId, message: 'Documento', sentBy: 'ai', messageType: 'document', mediaUrl: fileRecord.file_path }

@@ -13,14 +13,13 @@ import Clientes from './pages/Clientes'
 import Agenda from './pages/Agenda'
 import KnowledgeBase from './pages/KnowledgeBase'
 import AgentConfigPage from './pages/knowledge-base/AgentConfig'
+import FilesPage from './pages/knowledge-base/Files'
 import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
 import MainLayout from './components/layout/MainLayout'
 
 const App = () => (
-  <BrowserRouter
-    future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
-  >
+  <BrowserRouter>
     <AuthProvider>
       <TooltipProvider>
         <Toaster />
@@ -66,6 +65,10 @@ const App = () => (
             <Route
               path="/base-conhecimento/agente-ia"
               element={<AgentConfigPage />}
+            />
+            <Route
+              path="/base-conhecimento/arquivos"
+              element={<FilesPage />}
             />
             <Route path="/configuracoes" element={<Settings />} />
           </Route>

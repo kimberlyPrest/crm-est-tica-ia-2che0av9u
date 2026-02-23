@@ -107,12 +107,18 @@ export function useAppointmentActions(onSuccess?: () => void) {
           .eq('id', appointment.lead_id)
       }
 
+      // Get user organization
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data: userData } = await supabase.from('users').select('organization_id').eq('id', user?.id).single()
+      const organizationId = userData?.organization_id
+
       // 4. Create Activity
       await supabase.from('activities').insert({
         lead_id: appointment.lead_id,
         type: 'manual_action',
         description: 'Cliente não compareceu ao agendamento',
         metadata: { appointment_id: appointment.id },
+        organization_id: organizationId,
       })
 
       toast.success('No-show registrado com sucesso')

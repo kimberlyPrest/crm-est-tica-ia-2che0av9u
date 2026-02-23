@@ -273,7 +273,18 @@ export function useScheduling(
 
     setSubmitting(true)
     try {
-      // 1. Get Status ID for 'Agendado'
+      // 1. Get current user and organization
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data: userData } = await supabase.from('users').select('organization_id').eq('id', user?.id).single()
+      const organizationId = userData?.organization_id
+
+      if (!organizationId) {
+        toast.error('Erro de organização')
+        setSubmitting(false)
+        return
+      }
+
+      // 1.5 Get Status ID for 'Agendado'
       const { data: statusData } = await supabase
         .from('status')
         .select('id')
@@ -313,6 +324,7 @@ export function useScheduling(
           type: state.type,
           status: 'pending',
           notes: state.notes,
+          organization_id: organizationId,
         })
         .select()
         .single()
@@ -330,6 +342,7 @@ export function useScheduling(
           appointment_id: appointment.id,
           session_number: sessionNumber,
           notes: state.notes,
+          organization_id: organizationId,
         })
       }
 
@@ -347,6 +360,7 @@ export function useScheduling(
         type: 'appointment_created',
         description: `Agendamento de ${state.type === 'evaluation' ? 'Avaliação' : 'Sessão'} realizado para ${format(new Date(scheduledAt), "dd/MM 'às' HH:mm")}`,
         metadata: { appointment_id: appointment.id },
+        organization_id: organizationId,
       })
 
       toast.success('Agendamento realizado com sucesso!')

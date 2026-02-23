@@ -95,10 +95,30 @@ export function useAgentConfig() {
             []),
         ])
 
+        // Get current user and organization_id
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
+        if (userError) throw userError
+
+        const { data: userData, error: orgError } = await supabase
+          .from('users')
+          .select('organization_id')
+          .eq('id', user?.id)
+          .single()
+
+        if (orgError || !userData?.organization_id) {
+          console.error('Organization not found for user')
+          toast.error('Erro de permissão da organização')
+          setLoading(false)
+          return
+        }
+
+        const orgId = userData.organization_id
+
         // Load Agent Config
         let { data, error } = await supabase
           .from('agent_config')
           .select('*')
+          .eq('organization_id', orgId)
           .limit(1)
           .maybeSingle()
 
@@ -111,6 +131,7 @@ export function useAgentConfig() {
             .insert({
               agent_name: defaultConfig.agent_name,
               is_enabled: false,
+              organization_id: orgId
             })
             .select()
             .single()
@@ -214,12 +235,12 @@ export function useAgentConfig() {
       // Validation
       const result = configSchema.safeParse(config)
       if (!result.success) {
-        const formattedErrors = result.error.errors.map((e) => e.message)
+        const formattedErrors = result.error.issues.map((e) => e.message)
         setErrors(formattedErrors)
         toast.error('Corrija os erros antes de salvar')
 
         // Scroll to error (simplified)
-        const firstErrorPath = result.error.errors[0].path[0]
+        const firstErrorPath = result.error.issues[0].path[0]
         const element = document.getElementById(String(firstErrorPath))
         if (element)
           element.scrollIntoView({ behavior: 'smooth', block: 'center' })
