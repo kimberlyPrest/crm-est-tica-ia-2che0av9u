@@ -1,6 +1,6 @@
 import { GlassCard } from '@/components/GlassCard'
 import { AppButton } from '@/components/AppButton'
-import { Bot, FileText, Settings, ArrowRight } from 'lucide-react'
+import { Bot, FileText, ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 export default function KnowledgeBase() {
@@ -23,13 +23,6 @@ export default function KnowledgeBase() {
       color: 'bg-sky-100 text-sky-600',
       action: () => navigate('/base-conhecimento/arquivos'),
     },
-    {
-      title: 'Configurações Gerais',
-      description: 'Defina preferências globais da base de conhecimento.',
-      icon: Settings,
-      color: 'bg-purple-100 text-purple-600',
-      action: () => navigate('/configuracoes'),
-    },
   ]
 
   return (
@@ -43,7 +36,7 @@ export default function KnowledgeBase() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
         {cards.map((card) => (
           <GlassCard
             key={card.title}
@@ -69,6 +62,10 @@ export default function KnowledgeBase() {
               <AppButton
                 variant="ghost"
                 className="group-hover:translate-x-1 transition-transform"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  card.action()
+                }}
               >
                 Acessar <ArrowRight className="ml-2 h-4 w-4" />
               </AppButton>
