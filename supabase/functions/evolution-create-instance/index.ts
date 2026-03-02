@@ -56,13 +56,13 @@ Deno.serve(async (req) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': EVOLUTION_API_KEY,
+        apikey: EVOLUTION_API_KEY,
       },
       body: JSON.stringify({
         instanceName,
         qrcode: true,
         integration: 'WHATSAPP-BAILEYS',
-        webhook: Deno.env.get('WEBHOOK_URL') // Optional, if they have a global webhook configured
+        webhook: Deno.env.get('WEBHOOK_URL'), // Optional, if they have a global webhook configured
       }),
     })
 

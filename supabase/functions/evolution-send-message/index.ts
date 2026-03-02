@@ -50,13 +50,20 @@ Deno.serve(async (req) => {
     }
 
     // 3. Input Validation
-    const { leadId, message, sentBy, messageType = 'text', mediaUrl } = await req.json().catch(() => ({}))
+    const {
+      leadId,
+      message,
+      sentBy,
+      messageType = 'text',
+      mediaUrl,
+    } = await req.json().catch(() => ({}))
 
     if (!leadId || (!message && !mediaUrl) || !sentBy) {
       return new Response(
         JSON.stringify({
           error: 'Bad Request',
-          message: 'Missing required fields: leadId, message (or mediaUrl), sentBy',
+          message:
+            'Missing required fields: leadId, message (or mediaUrl), sentBy',
         }),
         {
           status: 400,
@@ -181,15 +188,15 @@ Deno.serve(async (req) => {
       bodyPayload = {
         number: remoteJid,
         audio: mediaUrl,
-        delay: 2000
+        delay: 2000,
       }
     } else if (messageType === 'document' && mediaUrl) {
       sendUrl = `${EVOLUTION_API_URL}/message/sendMedia/${instance.instance_name}`
       bodyPayload = {
         number: remoteJid,
-        mediatype: "document",
+        mediatype: 'document',
         media: mediaUrl,
-        delay: 2000
+        delay: 2000,
       }
     }
 
@@ -278,7 +285,12 @@ Deno.serve(async (req) => {
       .from('messages')
       .insert({
         lead_id: leadId,
-        content: messageType === 'audio' ? '[Áudio Enviado]' : messageType === 'document' ? '[Documento Enviado]' : trimmedMessage,
+        content:
+          messageType === 'audio'
+            ? '[Áudio Enviado]'
+            : messageType === 'document'
+              ? '[Documento Enviado]'
+              : trimmedMessage,
         direction: 'outbound',
         sent_by: sentBy,
         message_type: messageType,

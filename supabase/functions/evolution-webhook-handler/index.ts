@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
     // 1. Validate Instance and Get Organization ID
     const { data: instanceData, error: instanceError } = await supabase
       .from('whatsapp_instances')
-      .select('id, instance_name, organization_id')
+      .select('id, instance_name, organization_id, connection_status')
       .eq('instance_name', instance)
       .single()
 
@@ -90,12 +90,19 @@ Deno.serve(async (req) => {
           supabase,
         )
       } else if (event === 'messages.upsert') {
-        await handleMessageUpsert(
-          instanceData.id,
-          organizationId,
-          data,
-          supabase,
-        )
+        // Acceptance Criteria: Only trigger lead creation and movement logic if connected
+        if (instanceData.connection_status === 'connected') {
+          await handleMessageUpsert(
+            instanceData.id,
+            organizationId,
+            data,
+            supabase,
+          )
+        } else {
+          console.log(
+            `[Webhook] Ignoring messages.upsert for disconnected instance: ${instanceData.connection_status}`,
+          )
+        }
       } else {
         console.log(`[Webhook] Unhandled event type: ${event}`)
       }
@@ -215,12 +222,12 @@ async function handleMessageUpsert(
       })
       .eq('id', leadId)
   } else {
-    // Get default "Novo" status for this Org
+    // Get default status for this Org (is_default = true)
     const { data: statusData } = await supabase
       .from('status')
       .select('id')
       .eq('organization_id', organizationId)
-      .eq('name', 'Novo') // Prefer Novo
+      .eq('is_default', true)
       .limit(1)
       .maybeSingle()
 
@@ -290,7 +297,7 @@ async function handleMessageUpsert(
       direction: 'inbound',
       lead_id: leadId,
       whatsapp_instance_id: instanceId,
-      sent_by: 'contact',
+      sent_by: 'human', // Set as human per acceptance criteria
       message_type: messageType,
       meta_message_id: key?.id,
       organization_id: organizationId,
@@ -363,6 +370,7 @@ async function orchestrateAI(
       messageContent,
       messageId,
       agentConfigId: agentConfig.id,
+      organizationId,
     },
   })
 }
