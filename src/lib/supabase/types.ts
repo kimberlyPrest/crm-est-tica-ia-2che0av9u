@@ -11,7 +11,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '14.1'
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
@@ -48,25 +48,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'activities_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "activities_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'activities_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "activities_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'activities_whatsapp_instance_id_fkey'
-            columns: ['whatsapp_instance_id']
+            foreignKeyName: "activities_whatsapp_instance_id_fkey"
+            columns: ["whatsapp_instance_id"]
             isOneToOne: false
-            referencedRelation: 'whatsapp_instances'
-            referencedColumns: ['id']
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -133,18 +133,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'agent_config_active_whatsapp_instance_id_fkey'
-            columns: ['active_whatsapp_instance_id']
+            foreignKeyName: "agent_config_active_whatsapp_instance_id_fkey"
+            columns: ["active_whatsapp_instance_id"]
             isOneToOne: false
-            referencedRelation: 'whatsapp_instances'
-            referencedColumns: ['id']
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'agent_config_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "agent_config_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -187,25 +187,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'appointments_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "appointments_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'appointments_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "appointments_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'appointments_staff_id_fkey'
-            columns: ['staff_id']
+            foreignKeyName: "appointments_staff_id_fkey"
+            columns: ["staff_id"]
             isOneToOne: false
-            referencedRelation: 'users'
-            referencedColumns: ['id']
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -236,18 +236,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'cadence_logs_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "cadence_logs_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'cadence_logs_template_id_fkey'
-            columns: ['template_id']
+            foreignKeyName: "cadence_logs_template_id_fkey"
+            columns: ["template_id"]
             isOneToOne: false
-            referencedRelation: 'cadence_templates'
-            referencedColumns: ['id']
+            referencedRelation: "cadence_templates"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -287,11 +287,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'cadence_templates_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "cadence_templates_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -325,18 +325,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'deal_sessions_appointment_id_fkey'
-            columns: ['appointment_id']
+            foreignKeyName: "deal_sessions_appointment_id_fkey"
+            columns: ["appointment_id"]
             isOneToOne: false
-            referencedRelation: 'appointments'
-            referencedColumns: ['id']
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'deal_sessions_deal_id_fkey'
-            columns: ['deal_id']
+            foreignKeyName: "deal_sessions_deal_id_fkey"
+            columns: ["deal_id"]
             isOneToOne: false
-            referencedRelation: 'deals'
-            referencedColumns: ['id']
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -391,25 +391,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'deals_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "deals_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'deals_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "deals_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'deals_product_id_fkey'
-            columns: ['product_id']
+            foreignKeyName: "deals_product_id_fkey"
+            columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: 'products'
-            referencedColumns: ['id']
+            referencedRelation: "products"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -443,11 +443,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'knowledge_base_audios_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "knowledge_base_audios_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -481,11 +481,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'knowledge_base_files_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "knowledge_base_files_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -537,18 +537,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'leads_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "leads_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'leads_status_id_fkey'
-            columns: ['status_id']
+            foreignKeyName: "leads_status_id_fkey"
+            columns: ["status_id"]
             isOneToOne: false
-            referencedRelation: 'status'
-            referencedColumns: ['id']
+            referencedRelation: "status"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -594,25 +594,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'messages_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "messages_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'messages_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "messages_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'messages_whatsapp_instance_id_fkey'
-            columns: ['whatsapp_instance_id']
+            foreignKeyName: "messages_whatsapp_instance_id_fkey"
+            columns: ["whatsapp_instance_id"]
             isOneToOne: false
-            referencedRelation: 'whatsapp_instances'
-            referencedColumns: ['id']
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -658,18 +658,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'notifications_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "notifications_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'notifications_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "notifications_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -730,11 +730,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'products_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "products_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -771,18 +771,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'staff_availability_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "staff_availability_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'staff_availability_staff_id_fkey'
-            columns: ['staff_id']
+            foreignKeyName: "staff_availability_staff_id_fkey"
+            columns: ["staff_id"]
             isOneToOne: false
-            referencedRelation: 'users'
-            referencedColumns: ['id']
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -819,11 +819,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'status_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "status_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -860,11 +860,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'users_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "users_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -925,11 +925,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'whatsapp_instances_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "whatsapp_instances_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: true
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -975,32 +975,32 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'whatsapp_webhooks_lead_id_fkey'
-            columns: ['lead_id']
+            foreignKeyName: "whatsapp_webhooks_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: 'leads'
-            referencedColumns: ['id']
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'whatsapp_webhooks_message_id_fkey'
-            columns: ['message_id']
+            foreignKeyName: "whatsapp_webhooks_message_id_fkey"
+            columns: ["message_id"]
             isOneToOne: false
-            referencedRelation: 'messages'
-            referencedColumns: ['id']
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'whatsapp_webhooks_organization_id_fkey'
-            columns: ['organization_id']
+            foreignKeyName: "whatsapp_webhooks_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'whatsapp_webhooks_whatsapp_instance_id_fkey'
-            columns: ['whatsapp_instance_id']
+            foreignKeyName: "whatsapp_webhooks_whatsapp_instance_id_fkey"
+            columns: ["whatsapp_instance_id"]
             isOneToOne: false
-            referencedRelation: 'whatsapp_instances'
-            referencedColumns: ['id']
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1056,33 +1056,33 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])
-    ? (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -1091,23 +1091,23 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -1116,23 +1116,23 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -1141,36 +1141,36 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema['Enums']
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema['CompositeTypes']
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
@@ -1179,9 +1179,226 @@ export const Constants = {
   },
 } as const
 
+
 // ====== DATABASE EXTENDED CONTEXT (auto-generated) ======
-// This section contains constraints, RLS policies, functions, triggers,
-// indexes and materialized views not present in the type definitions above.
+// This section contains actual PostgreSQL column types, constraints, RLS policies,
+// functions, triggers, indexes and materialized views not present in the type definitions above.
+// IMPORTANT: The TypeScript types above map UUID, TEXT, VARCHAR all to "string".
+// Use the COLUMN TYPES section below to know the real PostgreSQL type for each column.
+// Always use the correct PostgreSQL type when writing SQL migrations.
+
+// --- COLUMN TYPES (actual PostgreSQL types) ---
+// Use this to know the real database type when writing migrations.
+// "string" in TypeScript types above may be uuid, text, varchar, timestamptz, etc.
+// Table: activities
+//   id: uuid (not null, default: gen_random_uuid())
+//   lead_id: uuid (nullable)
+//   type: text (not null)
+//   description: text (not null)
+//   metadata: jsonb (nullable, default: '{}'::jsonb)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   whatsapp_instance_id: uuid (nullable)
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: agent_config
+//   id: uuid (not null, default: gen_random_uuid())
+//   is_enabled: boolean (not null, default: true)
+//   auto_schedule_enabled: boolean (not null, default: false)
+//   auto_schedule_start_time: time without time zone (nullable)
+//   auto_schedule_end_time: time without time zone (nullable)
+//   agent_name: text (not null, default: 'Assistente'::text)
+//   role_definition: text (nullable)
+//   company_info: text (nullable)
+//   tone: text (nullable)
+//   knowledge_instructions: text (nullable)
+//   guardrails: text (nullable)
+//   human_handover_rules: text (nullable)
+//   few_shot_examples: jsonb (nullable, default: '[]'::jsonb)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
+//   gemini_api_key: text (nullable)
+//   active_whatsapp_instance_id: uuid (nullable)
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: appointments
+//   id: uuid (not null, default: gen_random_uuid())
+//   lead_id: uuid (not null)
+//   staff_id: uuid (nullable)
+//   scheduled_at: timestamp with time zone (not null)
+//   status: text (not null, default: 'pending'::text)
+//   type: text (not null, default: 'evaluation'::text)
+//   notes: text (nullable)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: cadence_logs
+//   id: uuid (not null, default: gen_random_uuid())
+//   lead_id: uuid (not null)
+//   template_id: uuid (not null)
+//   sent_at: timestamp with time zone (nullable, default: now())
+//   status: text (not null, default: 'sent'::text)
+//   error_message: text (nullable)
+// Table: cadence_templates
+//   id: uuid (not null, default: gen_random_uuid())
+//   name: text (not null)
+//   trigger_status: _text (not null)
+//   delay_hours: integer (not null)
+//   message_template: text (not null)
+//   is_active: boolean (not null, default: true)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: dashboard_kpis
+//   total_leads: bigint (nullable)
+//   leads_waiting_human: bigint (nullable)
+//   confirmed_appointments: bigint (nullable)
+//   unread_notifications: bigint (nullable)
+// Table: deal_sessions
+//   id: uuid (not null, default: gen_random_uuid())
+//   deal_id: uuid (not null)
+//   appointment_id: uuid (nullable)
+//   session_number: integer (not null)
+//   completed_at: timestamp with time zone (nullable)
+//   notes: text (nullable)
+//   created_at: timestamp with time zone (nullable, default: now())
+// Table: deals
+//   id: uuid (not null, default: gen_random_uuid())
+//   lead_id: uuid (not null)
+//   product_id: uuid (not null)
+//   total_value: integer (not null)
+//   discount_value: integer (nullable, default: 0)
+//   payment_method: text (nullable)
+//   purchase_date: date (not null, default: CURRENT_DATE)
+//   total_sessions: integer (not null)
+//   completed_sessions: integer (not null, default: 0)
+//   status: text (not null, default: 'active'::text)
+//   next_session_due: date (nullable)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: knowledge_base_audios
+//   id: uuid (not null, default: gen_random_uuid())
+//   name: text (not null)
+//   audio_path: text (not null)
+//   trigger_keywords: _text (nullable, default: '{}'::text[])
+//   is_active: boolean (not null, default: true)
+//   uploaded_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: knowledge_base_files
+//   id: uuid (not null, default: gen_random_uuid())
+//   name: text (not null)
+//   file_path: text (not null)
+//   file_type: text (not null)
+//   is_active: boolean (not null, default: true)
+//   uploaded_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: leads
+//   id: uuid (not null, default: gen_random_uuid())
+//   phone: text (not null)
+//   name: text (nullable)
+//   email: text (nullable)
+//   status_id: uuid (not null)
+//   ai_agent_blocked: boolean (not null, default: false)
+//   has_pending_message: boolean (not null, default: false)
+//   last_interaction_at: timestamp with time zone (nullable, default: now())
+//   notes: text (nullable)
+//   tags: _text (nullable, default: '{}'::text[])
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: messages
+//   id: uuid (not null, default: gen_random_uuid())
+//   lead_id: uuid (not null)
+//   direction: text (not null)
+//   content: text (not null)
+//   message_type: text (not null, default: 'text'::text)
+//   sent_by: text (not null)
+//   meta_message_id: text (nullable)
+//   read_at: timestamp with time zone (nullable)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   whatsapp_instance_id: uuid (nullable)
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: notifications
+//   id: uuid (not null, default: gen_random_uuid())
+//   lead_id: uuid (not null)
+//   type: text (not null)
+//   title: text (not null)
+//   message: text (not null)
+//   is_read: boolean (not null, default: false)
+//   priority: text (not null, default: 'normal'::text)
+//   metadata: jsonb (nullable, default: '{}'::jsonb)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   read_at: timestamp with time zone (nullable)
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: organizations
+//   id: uuid (not null, default: gen_random_uuid())
+//   name: text (not null)
+//   created_at: timestamp with time zone (not null, default: timezone('utc'::text, now()))
+//   updated_at: timestamp with time zone (not null, default: timezone('utc'::text, now()))
+// Table: products
+//   id: uuid (not null, default: gen_random_uuid())
+//   name: text (not null)
+//   default_price: integer (not null)
+//   return_interval_days: integer (not null, default: 30)
+//   total_sessions: integer (not null, default: 1)
+//   is_active: boolean (not null, default: true)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: staff_availability
+//   id: uuid (not null, default: gen_random_uuid())
+//   staff_id: uuid (not null)
+//   day_of_week: integer (not null)
+//   start_time: time without time zone (not null)
+//   end_time: time without time zone (not null)
+//   is_active: boolean (not null, default: true)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: status
+//   id: uuid (not null, default: gen_random_uuid())
+//   name: text (not null)
+//   order: integer (not null, default: 0)
+//   color: text (not null, default: '#6B7280'::text)
+//   is_default: boolean (not null, default: false)
+//   is_system: boolean (not null, default: false)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: users
+//   id: uuid (not null, default: gen_random_uuid())
+//   email: text (not null)
+//   name: text (not null)
+//   role: text (not null, default: 'staff'::text)
+//   is_active: boolean (not null, default: true)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
+//   organization_id: uuid (not null)
+// Table: whatsapp_instances
+//   id: uuid (not null, default: gen_random_uuid())
+//   instance_name: text (not null)
+//   connection_status: text (not null, default: 'disconnected'::text)
+//   qr_code: text (nullable)
+//   phone_number: text (nullable)
+//   webhook_url: text (nullable)
+//   profile_name: text (nullable)
+//   profile_picture_url: text (nullable)
+//   metadata: jsonb (nullable, default: '{}'::jsonb)
+//   last_connected_at: timestamp with time zone (nullable)
+//   last_disconnected_at: timestamp with time zone (nullable)
+//   connection_error_message: text (nullable)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
+//   last_checked_at: timestamp with time zone (nullable)
+//   organization_id: uuid (not null, default: get_auth_org_id())
+// Table: whatsapp_webhooks
+//   id: uuid (not null, default: gen_random_uuid())
+//   webhook_type: text (not null)
+//   raw_payload: jsonb (not null)
+//   processed: boolean (not null, default: false)
+//   processing_error: text (nullable)
+//   lead_id: uuid (nullable)
+//   message_id: uuid (nullable)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   processed_at: timestamp with time zone (nullable)
+//   whatsapp_instance_id: uuid (nullable)
+//   organization_id: uuid (not null, default: get_auth_org_id())
 
 // --- CONSTRAINTS ---
 // Table: activities
@@ -1616,21 +1833,21 @@ export const Constants = {
 //           NEW.qr_code = NULL; -- Security: Clear QR code
 //           NEW.last_connected_at = now();
 //       END IF;
-//
+//   
 //       -- Handle Disconnection
 //       IF NEW.connection_status = 'disconnected' AND OLD.connection_status = 'connected' THEN
 //           NEW.last_disconnected_at = now();
 //       END IF;
-//
+//   
 //       -- Handle Failures
 //       IF NEW.connection_status = 'failed' AND NEW.connection_error_message IS NULL THEN
 //           NEW.connection_error_message = 'Erro desconhecido na conexão.';
 //       END IF;
-//
+//   
 //       RETURN NEW;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION calculate_next_session_due()
 //   CREATE OR REPLACE FUNCTION public.calculate_next_session_due()
 //    RETURNS trigger
@@ -1643,7 +1860,7 @@ export const Constants = {
 //     IF (NEW.completed_sessions < NEW.total_sessions) THEN
 //       SELECT return_interval_days INTO return_interval
 //       FROM products WHERE id = NEW.product_id;
-//
+//       
 //       NEW.next_session_due := CURRENT_DATE + (return_interval || ' days')::INTERVAL;
 //     ELSE
 //       NEW.next_session_due := NULL;
@@ -1652,7 +1869,7 @@ export const Constants = {
 //     RETURN NEW;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION decrypt_secret(text, text)
 //   CREATE OR REPLACE FUNCTION public.decrypt_secret(encrypted_secret text, key text DEFAULT 'your-encryption-key-here'::text)
 //    RETURNS text
@@ -1665,7 +1882,7 @@ export const Constants = {
 //   EXCEPTION WHEN OTHERS THEN RETURN NULL;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION encrypt_secret(text, text)
 //   CREATE OR REPLACE FUNCTION public.encrypt_secret(secret text, key text DEFAULT 'your-encryption-key-here'::text)
 //    RETURNS text
@@ -1677,7 +1894,7 @@ export const Constants = {
 //     RETURN encode(pgp_sym_encrypt(secret, key), 'base64');
 //   END;
 //   $function$
-//
+//   
 // FUNCTION fix_auth_users_nulls()
 //   CREATE OR REPLACE FUNCTION public.fix_auth_users_nulls()
 //    RETURNS trigger
@@ -1696,7 +1913,7 @@ export const Constants = {
 //     RETURN NEW;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION get_auth_org_id()
 //   CREATE OR REPLACE FUNCTION public.get_auth_org_id()
 //    RETURNS uuid
@@ -1713,7 +1930,7 @@ export const Constants = {
 //       RETURN org_id;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION get_available_slots(uuid, date, integer)
 //   CREATE OR REPLACE FUNCTION public.get_available_slots(p_staff_id uuid, p_date date, p_duration_minutes integer DEFAULT 60)
 //    RETURNS TABLE(slot_time timestamp with time zone, is_available boolean)
@@ -1734,7 +1951,7 @@ export const Constants = {
 //     END LOOP;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION get_unread_notification_count()
 //   CREATE OR REPLACE FUNCTION public.get_unread_notification_count()
 //    RETURNS integer
@@ -1746,7 +1963,7 @@ export const Constants = {
 //     RETURN (SELECT COUNT(*)::INTEGER FROM notifications WHERE is_read = false);
 //   END;
 //   $function$
-//
+//   
 // FUNCTION handle_new_user()
 //   CREATE OR REPLACE FUNCTION public.handle_new_user()
 //    RETURNS trigger
@@ -1765,12 +1982,12 @@ export const Constants = {
 //       v_org_name := NULLIF(BTRIM(NEW.raw_user_meta_data->>'organization_name'), '');
 //       v_meta_role := COALESCE(NULLIF(BTRIM(NEW.raw_user_meta_data->>'role'), ''), 'admin');
 //       v_user_name := COALESCE(NULLIF(BTRIM(NEW.raw_user_meta_data->>'name'), ''), 'Usuário');
-//
+//       
 //       -- Check if organization_id is provided in metadata (e.g., when inviting users)
 //       IF NEW.raw_user_meta_data->>'organization_id' IS NOT NULL THEN
 //           v_meta_org_id := (NEW.raw_user_meta_data->>'organization_id')::UUID;
 //       END IF;
-//
+//   
 //       -- Logic:
 //       IF v_meta_org_id IS NOT NULL THEN
 //           v_org_id := v_meta_org_id;
@@ -1779,10 +1996,10 @@ export const Constants = {
 //           IF v_org_name IS NULL THEN
 //               v_org_name := v_user_name || ' Estética';
 //           END IF;
-//
+//   
 //           -- Create the isolated organization
 //           INSERT INTO public.organizations (name) VALUES (v_org_name) RETURNING id INTO v_org_id;
-//
+//           
 //           -- Seed Default Statuses for the new Organization
 //           INSERT INTO public.status (name, color, "order", is_system, is_default, organization_id) VALUES
 //           ('Novo', '#DDD6FE', 1, true, true, v_org_id),
@@ -1792,7 +2009,7 @@ export const Constants = {
 //           ('Perdido', '#FCA5A5', 5, true, false, v_org_id),
 //           ('Ser Humano', '#E5E7EB', 6, true, false, v_org_id);
 //       END IF;
-//
+//   
 //       -- Link the user to the organization in public.users table
 //       INSERT INTO public.users (id, email, name, role, is_active, organization_id)
 //       VALUES (
@@ -1809,11 +2026,11 @@ export const Constants = {
 //           name = EXCLUDED.name,
 //           role = EXCLUDED.role,
 //           organization_id = EXCLUDED.organization_id;
-//
+//   
 //       RETURN NEW;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION log_status_change()
 //   CREATE OR REPLACE FUNCTION public.log_status_change()
 //    RETURNS trigger
@@ -1836,7 +2053,7 @@ export const Constants = {
 //     RETURN NEW;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION mark_notification_read(uuid)
 //   CREATE OR REPLACE FUNCTION public.mark_notification_read(p_notification_id uuid)
 //    RETURNS boolean
@@ -1849,7 +2066,7 @@ export const Constants = {
 //     RETURN FOUND;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION move_lead_to_human(uuid, text)
 //   CREATE OR REPLACE FUNCTION public.move_lead_to_human(p_lead_id uuid, p_reason text DEFAULT 'IA não conseguiu responder'::text)
 //    RETURNS jsonb
@@ -1864,19 +2081,19 @@ export const Constants = {
 //   BEGIN
 //     SELECT name INTO v_lead_name FROM leads WHERE id = p_lead_id;
 //     IF NOT FOUND THEN RETURN jsonb_build_object('success', false, 'error', 'Lead não encontrado'); END IF;
-//
+//   
 //     SELECT id INTO v_ser_humano_status_id FROM status WHERE name = 'Ser Humano' LIMIT 1;
-//
+//     
 //     UPDATE leads SET status_id = v_ser_humano_status_id, ai_agent_blocked = true, updated_at = now() WHERE id = p_lead_id;
-//
+//     
 //     INSERT INTO notifications (lead_id, type, title, message, priority, metadata)
 //     VALUES (p_lead_id, 'lead_to_human', '🚨 IA transferiu lead', format('Lead %s movido. Motivo: %s', COALESCE(v_lead_name, 'Sem nome'), p_reason), 'urgent', jsonb_build_object('reason', p_reason))
 //     RETURNING id INTO v_notification_id;
-//
+//     
 //     RETURN jsonb_build_object('success', true, 'lead_id', p_lead_id, 'notification_id', v_notification_id);
 //   END;
 //   $function$
-//
+//   
 // FUNCTION notify_lead_to_human()
 //   CREATE OR REPLACE FUNCTION public.notify_lead_to_human()
 //    RETURNS trigger
@@ -1893,7 +2110,7 @@ export const Constants = {
 //     END IF;
 //     RETURN NEW;
 //   END; $function$
-//
+//   
 // FUNCTION update_deal_completed_sessions()
 //   CREATE OR REPLACE FUNCTION public.update_deal_completed_sessions()
 //    RETURNS trigger
@@ -1909,7 +2126,7 @@ export const Constants = {
 //     RETURN NEW;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION update_lead_last_interaction()
 //   CREATE OR REPLACE FUNCTION public.update_lead_last_interaction()
 //    RETURNS trigger
@@ -1917,13 +2134,13 @@ export const Constants = {
 //    SET search_path TO 'public'
 //   AS $function$
 //   BEGIN
-//     UPDATE leads
+//     UPDATE leads 
 //     SET last_interaction_at = NEW.created_at
 //     WHERE id = NEW.lead_id;
 //     RETURN NEW;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION update_updated_at()
 //   CREATE OR REPLACE FUNCTION public.update_updated_at()
 //    RETURNS trigger
@@ -1935,7 +2152,7 @@ export const Constants = {
 //     RETURN NEW;
 //   END;
 //   $function$
-//
+//   
 // FUNCTION update_whatsapp_instances_updated_at()
 //   CREATE OR REPLACE FUNCTION public.update_whatsapp_instances_updated_at()
 //    RETURNS trigger
@@ -1947,7 +2164,7 @@ export const Constants = {
 //       RETURN NEW;
 //   END;
 //   $function$
-//
+//   
 
 // --- TRIGGERS ---
 // Table: agent_config
@@ -2067,3 +2284,4 @@ export const Constants = {
 //   CREATE INDEX idx_whatsapp_webhooks_processed ON public.whatsapp_webhooks USING btree (processed) WHERE (processed = false)
 //   CREATE INDEX idx_whatsapp_webhooks_processed_queue ON public.whatsapp_webhooks USING btree (processed, created_at) WHERE (processed = false)
 //   CREATE INDEX idx_whatsapp_webhooks_type_created ON public.whatsapp_webhooks USING btree (webhook_type, created_at DESC)
+

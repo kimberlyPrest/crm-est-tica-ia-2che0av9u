@@ -1,6 +1,6 @@
-import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
-import { createClient } from 'npm:@supabase/supabase-js@2.48.1'
-import { corsHeaders } from '../_shared/cors.ts'
+import "jsr:@supabase/functions-js/edge-runtime.d.ts"
+import { createClient } from "npm:@supabase/supabase-js@2.48.1"
+import { corsHeaders } from "../_shared/cors.ts"
 
 Deno.serve(async (req: Request) => {
   // Handle CORS
@@ -55,7 +55,7 @@ Deno.serve(async (req: Request) => {
         headers: {
           apikey: evolutionKey,
         },
-      },
+      }
     )
 
     if (!statusRes.ok) {
@@ -80,7 +80,7 @@ Deno.serve(async (req: Request) => {
           `${evolutionUrl}/instance/connect/${instance.instance_name}`,
           {
             headers: { apikey: evolutionKey },
-          },
+          }
         )
         if (qrRes.ok) {
           const qrData = await qrRes.json()
