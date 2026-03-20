@@ -102,11 +102,6 @@ export function NewLeadModal({
   const onSubmit = async (values: FormValues) => {
     setLoading(true)
     try {
-      // Unmask phone for storage if desired, keeping masked for now as per usual display requirements
-      // But typically we store clean or consistent. Let's store clean numbers or consistent format.
-      // Acceptance criteria asks for mask in UI. Supabase type is string.
-      // Let's store as is or cleaned. Let's store exactly what is in the input for now to match mask requirements strictly.
-
       const { error } = await supabase.from('leads').insert({
         name: values.name || 'Sem Nome',
         phone: values.phone,
@@ -116,7 +111,20 @@ export function NewLeadModal({
         created_at: new Date().toISOString(),
       })
 
-      if (error) throw error
+      if (error) {
+        if (
+          error.code === '23505' ||
+          error.message.includes('leads_phone_key')
+        ) {
+          form.setError('phone', {
+            type: 'manual',
+            message: 'Este telefone já está cadastrado no CRM.',
+          })
+          toast.error('Telefone já cadastrado.')
+          return
+        }
+        throw error
+      }
 
       toast.success('Lead criado com sucesso!')
       form.reset()
