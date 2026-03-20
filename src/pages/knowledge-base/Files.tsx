@@ -3,8 +3,16 @@ import { supabase } from '@/lib/supabase/client'
 import { GlassCard } from '@/components/GlassCard'
 import { AppButton } from '@/components/AppButton'
 import { toast } from 'sonner'
-import { FileText, Mic, Trash2, Plus, Loader2 } from 'lucide-react'
+import {
+  FileText,
+  Mic,
+  Trash2,
+  Plus,
+  Loader2,
+  Link as LinkIcon,
+} from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { UploadModal } from '@/components/knowledge-base/UploadModal'
 
 export interface KBFile {
   id: string
@@ -28,6 +36,7 @@ export default function FilesPage() {
   const [files, setFiles] = useState<KBFile[]>([])
   const [audios, setAudios] = useState<KBAudio[]>([])
   const [loading, setLoading] = useState(true)
+  const [isUploadOpen, setIsUploadOpen] = useState(false)
 
   useEffect(() => {
     fetchData()
@@ -60,13 +69,25 @@ export default function FilesPage() {
     }
   }
 
-  const handleDeleteFile = async (id: string, fileName: string) => {
+  const handleDeleteFile = async (
+    id: string,
+    fileName: string,
+    filePath: string,
+  ) => {
     const confirm = window.confirm(
       `Deseja deletar permanentemente o arquivo ${fileName}?`,
     )
     if (!confirm) return
 
     try {
+      if (filePath) {
+        const pathParts = filePath.split('/knowledge_base/')
+        if (pathParts.length > 1) {
+          const storagePath = pathParts[1]
+          await supabase.storage.from('knowledge_base').remove([storagePath])
+        }
+      }
+
       const { error } = await supabase
         .from('knowledge_base_files')
         .delete()
@@ -80,13 +101,25 @@ export default function FilesPage() {
     }
   }
 
-  const handleDeleteAudio = async (id: string, fileName: string) => {
+  const handleDeleteAudio = async (
+    id: string,
+    fileName: string,
+    audioPath: string,
+  ) => {
     const confirm = window.confirm(
       `Deseja deletar permanentemente o áudio ${fileName}?`,
     )
     if (!confirm) return
 
     try {
+      if (audioPath) {
+        const pathParts = audioPath.split('/knowledge_base/')
+        if (pathParts.length > 1) {
+          const storagePath = pathParts[1]
+          await supabase.storage.from('knowledge_base').remove([storagePath])
+        }
+      }
+
       const { error } = await supabase
         .from('knowledge_base_audios')
         .delete()
@@ -116,9 +149,7 @@ export default function FilesPage() {
             Gerencie os documentos e áudios que a IA pode enviar aos clientes.
           </p>
         </div>
-        <AppButton
-          onClick={() => toast.info('Funcionalidade de upload em breve')}
-        >
+        <AppButton onClick={() => setIsUploadOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Novo Upload
         </AppButton>
@@ -170,17 +201,27 @@ export default function FilesPage() {
                       {file.is_active ? '✅ Ativo' : '❌ Inativo'}
                     </p>
                     <div className="flex flex-wrap gap-1 mt-2">
-                      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full border border-gray-200">
-                        {file.file_type || 'Documento'}
+                      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full border border-gray-200 uppercase">
+                        {file.file_type || 'DOC'}
                       </span>
                     </div>
                   </div>
                 </div>
                 <div className="mt-4 flex gap-2 justify-end border-t border-gray-100 pt-4">
+                  <a
+                    href={file.file_path}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                  >
+                    <LinkIcon className="h-4 w-4" />
+                  </a>
                   <AppButton
                     variant="ghost"
                     className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                    onClick={() => handleDeleteFile(file.id, file.name)}
+                    onClick={() =>
+                      handleDeleteFile(file.id, file.name, file.file_path)
+                    }
                   >
                     <Trash2 className="h-4 w-4" />
                   </AppButton>
@@ -243,10 +284,20 @@ export default function FilesPage() {
                   </div>
                 </div>
                 <div className="mt-4 flex gap-2 justify-end border-t border-gray-100 pt-4">
+                  <a
+                    href={audio.audio_path}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-md text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+                  >
+                    <LinkIcon className="h-4 w-4" />
+                  </a>
                   <AppButton
                     variant="ghost"
                     className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                    onClick={() => handleDeleteAudio(audio.id, audio.name)}
+                    onClick={() =>
+                      handleDeleteAudio(audio.id, audio.name, audio.audio_path)
+                    }
                   >
                     <Trash2 className="h-4 w-4" />
                   </AppButton>
@@ -256,6 +307,12 @@ export default function FilesPage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      <UploadModal
+        open={isUploadOpen}
+        onOpenChange={setIsUploadOpen}
+        onSuccess={fetchData}
+      />
     </div>
   )
 }

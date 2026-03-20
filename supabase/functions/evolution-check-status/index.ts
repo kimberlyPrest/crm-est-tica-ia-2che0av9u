@@ -78,23 +78,20 @@ Deno.serve(async (req: Request) => {
 
     // Garante que o webhook está registrado (corrige instâncias criadas sem webhook)
     try {
-      await fetch(
-        `${evolutionUrl}/webhook/set/${instance.instance_name}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            apikey: evolutionKey,
-          },
-          body: JSON.stringify({
-            url: webhookUrl,
-            enabled: true,
-            webhookByEvents: false,
-            webhookBase64: false,
-            events: ['MESSAGES_UPSERT', 'CONNECTION_UPDATE'],
-          }),
+      await fetch(`${evolutionUrl}/webhook/set/${instance.instance_name}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: evolutionKey,
         },
-      )
+        body: JSON.stringify({
+          url: webhookUrl,
+          enabled: true,
+          webhookByEvents: false,
+          webhookBase64: false,
+          events: ['MESSAGES_UPSERT', 'CONNECTION_UPDATE'],
+        }),
+      })
       console.log(`[CheckStatus] Webhook garantido: ${webhookUrl}`)
     } catch (webhookErr) {
       console.error('[CheckStatus] Erro ao registrar webhook:', webhookErr)
