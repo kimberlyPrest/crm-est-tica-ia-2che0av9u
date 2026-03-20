@@ -43,10 +43,14 @@ Deno.serve(async (req: Request) => {
 
     const evolutionUrl = Deno.env.get('EVOLUTION_API_URL')
     const evolutionKey = Deno.env.get('EVOLUTION_API_KEY')
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
 
     if (!evolutionUrl || !evolutionKey) {
       throw new Error('Evolution API credentials not configured')
     }
+
+    // URL do webhook derivada do SUPABASE_URL
+    const webhookUrl = `${supabaseUrl}/functions/v1/evolution-webhook-handler`
 
     // Fetch status from Evolution API
     const statusRes = await fetch(
@@ -70,6 +74,30 @@ Deno.serve(async (req: Request) => {
       newStatus = 'connected'
     } else if (state === 'connecting') {
       newStatus = 'connecting'
+    }
+
+    // Garante que o webhook está registrado (corrige instâncias criadas sem webhook)
+    try {
+      await fetch(
+        `${evolutionUrl}/webhook/set/${instance.instance_name}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: evolutionKey,
+          },
+          body: JSON.stringify({
+            url: webhookUrl,
+            enabled: true,
+            webhookByEvents: false,
+            webhookBase64: false,
+            events: ['MESSAGES_UPSERT', 'CONNECTION_UPDATE'],
+          }),
+        },
+      )
+      console.log(`[CheckStatus] Webhook garantido: ${webhookUrl}`)
+    } catch (webhookErr) {
+      console.error('[CheckStatus] Erro ao registrar webhook:', webhookErr)
     }
 
     // If not connected, try to fetch QR Code

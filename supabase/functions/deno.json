@@ -1,11 +1,12 @@
 {
   "_versions": {
-    "evolution-create-instance": 13,
-    "evolution-webhook-handler": 3,
-    "gemini-process-message": 5,
-    "evolution-send-message": 3,
-    "evolution-check-status": 5,
-    "evolution-disconnect": 3,
-    "create-user": 8
+    "evolution-create-instance": 15,
+    "evolution-webhook-handler": 5,
+    "gemini-process-message": 6,
+    "evolution-send-message": 4,
+    "evolution-check-status": 7,
+    "evolution-disconnect": 4,
+    "create-user": 9,
+    "generate-agent-response": 2
   }
 }

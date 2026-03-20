@@ -43,10 +43,14 @@ Deno.serve(async (req) => {
 
     const EVOLUTION_API_URL = Deno.env.get('EVOLUTION_API_URL')!
     const EVOLUTION_API_KEY = Deno.env.get('EVOLUTION_API_KEY')!
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 
     if (!EVOLUTION_API_URL || !EVOLUTION_API_KEY) {
       throw new Error('Evolution API configuration is missing')
     }
+
+    // URL do webhook sempre derivada do SUPABASE_URL (sem depender de secret separado)
+    const webhookUrl = `${SUPABASE_URL}/functions/v1/evolution-webhook-handler`
 
     // Generate instance name: unique per org to avoid collision
     const instanceName = `instance_${organizationId.replace(/-/g, '').slice(0, 12)}`
@@ -62,7 +66,6 @@ Deno.serve(async (req) => {
         instanceName,
         qrcode: true,
         integration: 'WHATSAPP-BAILEYS',
-        webhook: Deno.env.get('WEBHOOK_URL'), // Optional, if they have a global webhook configured
       }),
     })
 
@@ -73,6 +76,28 @@ Deno.serve(async (req) => {
 
     const evoData = await createRes.json()
     const qrCode = evoData?.qrcode?.base64 || evoData?.hash?.qrcode || null // Adjust based on Evolution API version
+
+    // Registra o webhook na Evolution API via endpoint dedicado (mais confiável)
+    try {
+      await fetch(`${EVOLUTION_API_URL}/webhook/set/${instanceName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: EVOLUTION_API_KEY,
+        },
+        body: JSON.stringify({
+          url: webhookUrl,
+          enabled: true,
+          webhookByEvents: false,
+          webhookBase64: false,
+          events: ['MESSAGES_UPSERT', 'CONNECTION_UPDATE'],
+        }),
+      })
+      console.log(`[CreateInstance] Webhook registrado: ${webhookUrl}`)
+    } catch (webhookErr) {
+      // Não bloqueia a criação da instância se o webhook falhar
+      console.error('[CreateInstance] Erro ao registrar webhook:', webhookErr)
+    }
 
     // Upsert instance into DB
     const { data: instance, error: dbError } = await supabaseAdmin
