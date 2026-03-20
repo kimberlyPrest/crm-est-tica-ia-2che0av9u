@@ -141,7 +141,10 @@ Deno.serve(async (req) => {
     }))
 
     // Valida que o último item é do user (Gemini exige)
-    if (contents.length === 0 || contents[contents.length - 1].role !== 'user') {
+    if (
+      contents.length === 0 ||
+      contents[contents.length - 1].role !== 'user'
+    ) {
       throw new Error('A última mensagem do histórico deve ser do usuário')
     }
 
@@ -163,8 +166,7 @@ Deno.serve(async (req) => {
     }
 
     const geminiData = await res.json()
-    const response =
-      geminiData.candidates?.[0]?.content?.parts?.[0]?.text
+    const response = geminiData.candidates?.[0]?.content?.parts?.[0]?.text
 
     if (!response) {
       throw new Error('Sem resposta do Gemini')
